@@ -32,17 +32,18 @@ Examples available on a sample page:
 Install as any other WordPress plugin - from plugin repository or upload plugin zip file to the server from wp admin area.
 
 == Frequently Asked Questions ==
-No Faq so far, but I will be more than happy to help. Post via <a href="http://pollka.unicornis.pl/forums/forum/pollka-polls/pollka-polls-support/">support forum.</a> 
+No Faq so far, but I will be more than happy to help. Post via <a href="https://postviamail.unicornis.pl/?forum=support">support forum.</a> 
 
 == Screenshots ==
-1. Sample poll
-2. After voting
-3. Options page
+1. Sample post and a notification mail
+2. Mail with customized reply-to address containing security hash
+3. The result - reply posted via mail
+4. Config page
 
 
 == Changelog ==
 1.01 
-   Initial working version.
+   Initial WP plugin in repository.
 
 1.0
    Initial code
@@ -53,11 +54,11 @@ None
 == Translations ==
  
 * English - default, always included
-* Polish: Nie na darmo to Pollka! included in the distribution 
+* Polish: Comming soon 
 
 The pot file included.
 
-*Note:* All my plugins are localized/ translateable by default. This is very important for all users worldwide. 
+*Note:* All my plugins will be localized/ translateable by default. This is very important for all users worldwide. 
 So please contribute your language to the plugin to make it even more useful. 
 For translating I recommend the awesome ["Codestyling Localization" plugin](http://wordpress.org/extend/plugins/codestyling-localization/) 
 and for validating the ["Poedit Editor"](http://www.poedit.net/).
