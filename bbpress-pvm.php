@@ -7,9 +7,9 @@
 /*
 Plugin Name: bbPress Post Via Mail
 Description: Reply to posts, comments, bbPress topics by e-mail. Send notifications about new topics and replies as well.
-Version: 1.01
+Version: 1.0.2
 Author: Unicornis, parts by Ryan McCue
-Author URI: http://postviaemail.unicornis.pl/
+Author URI: https://postviamail.unicornis.pl/
 */
 
 if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
