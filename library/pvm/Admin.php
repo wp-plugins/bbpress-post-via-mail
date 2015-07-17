@@ -272,7 +272,9 @@ class pvm_Admin extends pvm_Autohooker {
 	 * @see self::init()
 	 */
 	public static function settings_section_main() {
-		echo '<p>' . __('Main settings for the plugin', 'pvm') . '</p>';
+		echo '<p>' . __('Main settings for the plugin', 'pvm') . '</p>';	
+ 		echo '<p> NOTICE - custom reply contents not working yet, I will fix it till 2015-07-20. Message is hard coded yet.</p>';
+		echo '<p>Appologies for inconvinience</p>'; 
 	}
 
 	/**
