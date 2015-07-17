@@ -26,13 +26,13 @@ Examples available on a sample page:
 
 <a href="https://postviamail.unicornis.pl">Snapshots showing how it works</a>
 
-<a href="https://postviamail.unicornis.pl/?page_id=4">Step by step configuration instruction</a>
+<a href="https://postviamail.unicornis.pl/configuration/">Step by step configuration instruction</a>
 
 == Installation ==
 Install as any other WordPress plugin - from plugin repository or upload plugin zip file to the server from wp admin area.
 
 == Frequently Asked Questions ==
-No Faq so far, but I will be more than happy to help. Post via <a href="https://postviamail.unicornis.pl/?forum=support">support forum.</a> 
+No Faq so far, but I will be more than happy to help. Post via <a href="https://postviamail.unicornis.pl/forums/forum/support/">support forum.</a> 
 
 == Screenshots ==
 1. Sample post and a notification mail
