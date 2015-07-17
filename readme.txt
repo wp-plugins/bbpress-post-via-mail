@@ -22,7 +22,7 @@ Requires Postmark account to hook the incomming emails.
 
 Unique hash value in each message provides additional security.
 
-Examples available on a sample page:
+Examples available on a plugin page:
 
 <a href="https://postviamail.unicornis.pl">Snapshots showing how it works</a>
 
