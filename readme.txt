@@ -4,7 +4,7 @@ Donate link: https://postviamail.unicornis.pl/donation
 Tags: bbpress, post via mail
 Requires at least: WP 3.8
 Tested up to: 4.2.2
-Version: 1.02
+Version: 1.0.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
@@ -37,15 +37,15 @@ No Faq so far, but I will be more than happy to help. Post via <a href="https://
 == Screenshots ==
 1. Sample post and a notification mail
 2. Mail with customized reply-to address containing security hash
-3. The result - reply posted via mail
+3. The resurs - reply posted via mail
 4. Config page
 
 
 == Changelog ==
-1.02
+1.0.2
    Added reply customization config, but messages still hardcoded.
 
-1.01 
+1.0.1 
    Initial WP plugin in repository.
 
 1.0
