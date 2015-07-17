@@ -3,8 +3,8 @@ Contributors: Unicornis, Ryan McCue
 Donate link: https://postviamail.unicornis.pl/donation
 Tags: bbpress, post via mail
 Requires at least: WP 3.8
-Tested up to: WP 4.2.2 bbPress 2.5.8
-Version: 1.01
+Tested up to: 4.2.2 bbPress 2.5.8
+Version: 1.02
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
@@ -42,6 +42,9 @@ No Faq so far, but I will be more than happy to help. Post via <a href="https://
 
 
 == Changelog ==
+1.02
+   Added reply customization config, but messages still hardcoded.
+
 1.01 
    Initial WP plugin in repository.
 
