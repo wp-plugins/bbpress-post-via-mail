@@ -1,9 +1,9 @@
 === bbPress Post via Mail ===
 Contributors: Unicornis, Ryan McCue
-Donate link: http://postviamail.unicornis.pl/donation
+Donate link: https://postviamail.unicornis.pl/donation
 Tags: bbpress, post via mail
-Requires at least: 4.2.2
-Tested up to: 4.2.2
+Requires at least: WP 3.8
+Tested up to: WP 4.2.2 bbPress 2.5.8
 Version: 1.01
 Stable tag: trunk
 License: GPLv2 or later
