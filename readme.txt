@@ -3,7 +3,7 @@ Contributors: Unicornis, Ryan McCue
 Donate link: https://postviamail.unicornis.pl/donation
 Tags: bbpress, post via mail
 Requires at least: WP 3.8
-Tested up to: 4.2.2 bbPress 2.5.8
+Tested up to: 4.2.2
 Version: 1.02
 Stable tag: trunk
 License: GPLv2 or later
