@@ -22,7 +22,7 @@ class pvm extends pvm_Autohooker {
 		}
 		catch (Exception $e) {
 			add_action('all_admin_notices', function () use ($e) {
-				printf('<div class="error"><p>' . __('Problem setting up pvm! %s', 'bbsub') . '</p></div>', $e->getMessage());
+				printf('<div class="error"><p>' . __('Problem setting up bbPress Post Via Mail! %s', 'bbsub') . '</p></div>', $e->getMessage());
 			});
 
 		}
@@ -168,6 +168,21 @@ class pvm extends pvm_Autohooker {
 
 		return $address;
 	}
+	public static function get_new_topic_subj() {
+                return self::get_option('bb_pvm_new_topic_subj', false);
+        }
+
+	public static function get_new_topic_msg() {
+                return self::get_option('bb_pvm_new_topic_msg', false);
+        }
+
+        public static function get_new_reply_subj() {
+                return self::get_option('bb_pvm_new_reply_subj', false);
+        }
+
+        public static function get_new_reply_msg() {
+                return self::get_option('bb_pvm_new_reply_msg', false);
+        }
 
 	/**
 	 * Notify the user of an invalid reply
@@ -175,19 +190,27 @@ class pvm extends pvm_Autohooker {
 	 * @param WP_User $user User that supposedly sent the email
 	 * @param int $topic_id Topic ID
 	 */
-	public static function notify_invalid($user, $title) {
+	public static function notify_invalid($user, $from, $link, $title) {
 		// Build email
-		$text = 'Hi %1$s,' . "\n";
-		$text .= 'Someone just tried to post to the "%2$s" topic as you, but were unable to' . "\n";
-		$text .= 'authenticate as you. If you recently tried to reply to this topic, try' . "\n";
-		$text .= 'replying to the original topic again. If that doesn\'t work, post on the' . "\n";
-		$text .= 'forums via your browser and ask an admin.' . "\n";
-		$text .= '---' . "\n" . 'The admins at %3$s' . "\n\n";
-		$text = sprintf($text, $user->display_name, $title, get_option('blogname'));
-
+		$notify = self::get_option('bb_pvm_send_bad_reply', false);
+		if (!$notify) return;
+		//error_log("function notify_invalid:".$notify);
+                $site=get_option('blogname');
+                $subject=get_option('bb_pvm_bad_reply_subj', false);
+		$text = self::get_option('bb_pvm_bad_reply_msg', false);
+                $text = str_replace('{user}',$user->display_name,$text);
+		$text = str_replace('{from}',$from,$text);
+		$subject = str_replace('{user}',$user->display_name,$subject);
+		$text = str_replace('{site}',$site,$text);
+		$text = str_replace('{link}',$link,$text);
+                $subject = str_replace('{site}',$site,$subject);
+		$text = str_replace('{title}',$title,$text);
+		$text = str_replace('{link}',get_site_url(),$text);
+                $subject = str_replace('{title}',$title,$subject);
+                
 		$text = apply_filters( 'bb_pvm_email_message_invalid', $text, $user->ID );
-		$subject = apply_filters('bb_pvm_email_subject_invalid', '[' . get_option( 'blogname' ) . '] Invalid Reply Received', $user->ID);
-		wp_mail($user->user_email, $subject, $text);
+		error_log("UserMail:".$user->user_email." Subject:".$subject." Text:". $text);
+                wp_mail($user->user_email, $subject, $text);
 	}
 
 	/**

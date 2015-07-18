@@ -596,9 +596,10 @@ class pvm_Connector_WordPress {
 		if ( ! empty( $value ) ) {
 			return $value;
 		}
-
 		$comment_parent = null;
-                error_log("Reply_post:".$reply->post);
+                error_log("Reply_post WP:".$reply->post);
+		$debug_export = var_export($reply, true);
+                error_log("Reply WP  -> ".$debug_export);
                 if (strpos($reply->post,"_"))
                 	list( $type, $parent_id ) = explode( '_', $reply->post, 2 );
 		else {
@@ -630,7 +631,7 @@ class pvm_Connector_WordPress {
 		$user = $reply->get_user();
 
 		if ( ! $reply->is_valid() ) {
-			pvm::notify_invalid( $user, $post->post_title );
+			pvm::notify_invalid( $user,$reply->from, get_permalink($post), $post->post_title );
 			return new WP_Error( 'pvm.connector.wordpress.invalid_reply' );
 		}
 

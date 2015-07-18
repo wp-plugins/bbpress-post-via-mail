@@ -32,26 +32,39 @@ class pvm_Admin extends pvm_Autohooker {
 		if (!is_admin()) {
 			return false;
 		}
-
+		register_setting( 'bb_pvm_options', 'bb_pvm_replyto', array(__CLASS__, 'validate_replyto') );
 		register_setting( 'bb_pvm_options', 'bb_pvm_handler_type', array(__CLASS__, 'validate_type') );
 		register_setting( 'bb_pvm_options', 'bb_pvm_replyto', array(__CLASS__, 'validate_replyto') );
 		register_setting( 'bb_pvm_options', 'bb_pvm_from_email', array(__CLASS__, 'validate_from_email') );
 		register_setting( 'bb_pvm_options', 'bb_pvm_send_to_author', array(__CLASS__, 'validate_send_to_author') );
 		register_setting( 'bb_pvm_options', 'bb_pvm_handler_options', array(__CLASS__, 'validate_handler_options') );
+
 		register_setting( 'bb_pvm_options', 'bb_pvm_new_topic_subj', array(__CLASS__, 'validate_new_topic_subj') );
-		register_setting( 'bb_pvm_options', 'bb_pvm_new_topic_msg', array(__CLASS__, 'validate_new_topic_msg') );
-		register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_subj', array(__CLASS__, 'validate_new_reply_subj') );
-		register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_msg', array(__CLASS__, 'validate_new_reply_msg') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_new_topic_msg', array(__CLASS__, 'validate_new_topic_msg') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_subj', array(__CLASS__, 'validate_new_reply_subj') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_msg', array(__CLASS__, 'validate_new_reply_msg') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_new_post_subj', array(__CLASS__, 'validate_new_post_subj') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_new_post_msg', array(__CLASS__, 'validate_new_post_msg') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_new_comment_subj', array(__CLASS__, 'validate_new_comment_subj') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_new_comment_msg', array(__CLASS__, 'validate_new_comment_msg') );
+          
+		register_setting( 'bb_pvm_options', 'bb_pvm_send_bad_reply', array(__CLASS__, 'validate_send_bad_reply') );
+	      	register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_subj', array(__CLASS__, 'validate_bad_reply_subj') );
+                register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_msg', array(__CLASS__, 'validate_bad_reply_msg') );
+
 		// Global Settings
 		add_settings_section('bb_pvm_options_global', __('Main Settings','pvm'), array(__CLASS__, 'settings_section_main'), 'bb_pvm_options');
-		add_settings_field('bb_pvm_options_global_type', __('Messaging Handler','pvm'), array(__CLASS__, 'settings_field_type'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_replyto', __('Reply-To Address','pvm'), array(__CLASS__, 'settings_field_replyto'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_from_email', __('From Address','pvm'), array(__CLASS__, 'settings_field_from'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_send_to_author', __('Send To','pvm'), array(__CLASS__, 'settings_field_send_to_author'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_new_topic_subj',__('New Topic Subject','pvm'),array(__CLASS__, 'settings_field_new_topic_subj'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_new_topic_msg', __('New Topic Message','pvm'), array(__CLASS__, 'settings_field_new_topic_msg'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_new_reply_subj',__('New Reply Subject','pvm'),array(__CLASS__, 'settings_field_new_reply_subj'), 'bb_pvm_options', 'bb_pvm_options_global');
-        	add_settings_field('bb_pvm_options_global_new_reply_msg', __('New Reply Message','pvm'), array(__CLASS__, 'settings_field_new_reply_msg'), 'bb_pvm_options', 'bb_pvm_options_global');
+		add_settings_field('bb_pvm_options_global_type', __('Messaging Handler','pvm'), 
+					array(__CLASS__, 'settings_field_type'), 'bb_pvm_options', 'bb_pvm_options_global');
+		add_settings_field('bb_pvm_options_global_replyto', __('Reply-To Address','pvm'), 
+					array(__CLASS__, 'settings_field_replyto'), 'bb_pvm_options', 'bb_pvm_options_global');
+		add_settings_field('bb_pvm_options_global_from_email', __('From Address','pvm'), 
+					array(__CLASS__, 'settings_field_from'), 'bb_pvm_options', 'bb_pvm_options_global');
+		add_settings_field('bb_pvm_options_global_send_to_author', __('Send To','pvm'), 
+					array(__CLASS__, 'settings_field_send_to_author'), 'bb_pvm_options', 'bb_pvm_options_global');
+	
+
+
 		// Note: title is false so that we can handle it ourselves
 		add_settings_section('bb_pvm_options_handleroptions', false, array(__CLASS__, 'settings_section_handler'), 'bb_pvm_options');
 
@@ -59,9 +72,38 @@ class pvm_Admin extends pvm_Autohooker {
 			if ( ! is_callable( $connector, 'register_settings' ) ) {
 				continue;
 			}
-
 			$connector->register_settings();
 		}
+
+                add_settings_section('bb_pvm_options_messages', __('Notification messages','pvm'), array(__CLASS__, 'settings_section_messages'), 'bb_pvm_options');
+		add_settings_field('bb_pvm_options_global_send_bad_reply', __('Send Bad Reply notification','pvm'),
+                                        array(__CLASS__, 'settings_field_send_bad_reply'), 'bb_pvm_options', 'bb_pvm_options_global');
+		add_settings_field('bb_pvm_options_messages_bad_reply_subj',__('Bad Reply Subject','pvm'),
+                                array(__CLASS__, 'settings_field_bad_reply_subj'), 'bb_pvm_options', 'bb_pvm_options_messages');
+                add_settings_field('bb_pvm_options_messages_bad_reply_msg', __('Bad Reply Message','pvm'),
+                                array(__CLASS__, 'settings_field_bad_reply_msg'), 'bb_pvm_options', 'bb_pvm_options_messages');
+ 		
+		add_settings_section('bb_pvm_options_messagesWP', __('Notification messages for WordPress','pvm'), array(__CLASS__, 'settings_section_messagesWP'), 'bb_pvm_options');
+		add_settings_field('bb_pvm_options_messages_new_post_subj',__('New Post Subject','pvm'),
+				array(__CLASS__, 'settings_field_new_post_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+        	add_settings_field('bb_pvm_options_messages_new_post_msg', __('New Post Message','pvm'), 
+				array(__CLASS__, 'settings_field_new_post_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+		add_settings_field('bb_pvm_options_messages_new_comment_subj',__('New Comment Subject','pvm'),
+				array(__CLASS__, 'settings_field_new_comment_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+        	add_settings_field('bb_pvm_options_messages_new_comment_msg', __('New Comment Message','pvm'), 
+				array(__CLASS__, 'settings_field_new_comment_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+	        
+		if (is_plugin_active('bbpress/bbpress.php')) {
+			 add_settings_section('bb_pvm_options_messagesBBP', __('Notification messages bbPress','pvm'), array(__CLASS__, 'settings_section_messagesBBP'), 'bb_pvm_options');
+                        add_settings_field('bb_pvm_options_messages_new_topic_subj',__('New Topic Subject','pvm'),
+                                array(__CLASS__, 'settings_field_new_topic_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
+                        add_settings_field('bb_pvm_options_messages_new_topic_msg', __('New Topic Message','pvm'),
+                                array(__CLASS__, 'settings_field_new_topic_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
+                        add_settings_field('bb_pvm_options_messages_new_reply_subj',__('New Reply Subject','pvm'),
+                                array(__CLASS__, 'settings_field_new_reply_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
+                        add_settings_field('bb_pvm_options_messages_new_reply_msg', __('New Reply Message','pvm'),
+                                array(__CLASS__, 'settings_field_new_reply_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
+                }	
 
 		pvm_Manager::register_default_settings();
 	}
@@ -79,7 +121,7 @@ class pvm_Admin extends pvm_Autohooker {
 		else {
 			$parent = 'options-general.php';
 		}
-		add_submenu_page( $parent, _x('pvm', 'page title', 'pvm'), _x('pvm', 'menu title', 'pvm'), 'manage_options', 'bb_pvm_options', array(__CLASS__, 'admin_page'));
+		add_submenu_page( $parent, _x('bbPress Post Via Mail', 'page title', 'pvm'), _x('bbPress Post Via Mail', 'menu title', 'pvm'), 'manage_options', 'bb_pvm_options', array(__CLASS__, 'admin_page'));
 	}
 
 	/**
@@ -272,11 +314,25 @@ class pvm_Admin extends pvm_Autohooker {
 	 * @see self::init()
 	 */
 	public static function settings_section_main() {
-		echo '<p>' . __('Main settings for the plugin', 'pvm') . '</p>';	
- 		echo '<p> NOTICE - custom reply contents not working yet, I will fix it till 2015-07-20. Message is hard coded yet.</p>';
-		echo '<p>Appologies for inconvinience</p>'; 
+		// echo '<p>' . __('Main settings for the plugin', 'pvm') . '</p>';	
 	}
+	/**
+         * Print description for the main settings section
+       	 *
+         * @see self::init()
+         */
+        public static function settings_section_messages() {
+		echo '<p>' . __('Clear to restore defaults', 'pvm') . '</p>';
+        }
+	public static function settings_section_messagesWP() {
+		 echo '<p>' . __('Clear to restore defaults', 'pvm') . '</p>';
 
+        }
+	 public static function settings_section_messagesBBP() {
+		echo '<p>' . __('Clear to restore defaults', 'pvm') . '</p>';
+
+              
+        }
 	/**
 	 * Print field for the handler type
 	 *
@@ -416,25 +472,13 @@ class pvm_Admin extends pvm_Autohooker {
          */
         public static function settings_field_new_topic_subj() {
                 $current = pvm::get_option('bb_pvm_new_topic_subj', '');
-
-                //echo '<textarea name="bb_pvm_new_topic_msg" class="large-text" rows="15" id="bb_pvm_new_topic_msg" >' . esc_attr($current) . '</textarea>';
+                if (!strlen($current))
+			$current=__('New topic {title} on forum {forum}','pvm');
                 echo '<input type="text" name="bb_pvm_new_topic_subj" class="regular-text" value="' . esc_attr($current) . '" />';
-                echo '<p class="description">' . __('You can use following tags: {author} {forum_name} {title} - they will be substituted', 'pvm') . '</p>';
+                echo '<p class="description">' . __('You can use following tags: {site} {author} {forum} {title} - they will be substituted', 'pvm') . '</p>';
         }
 
         public static function validate_new_topic_subj($input) {
-                $oldvalue = pvm::get_option('bb_pvm_new_topic_subj', '');
-
-                // Check that the resulting email is valid
-                if (!strlen($input)) {
-                        add_settings_error(
-                                'bb_pvm_new_topic_subj',
-                                'bb_pvm_new_topic_subj',
-                                __('The response should have subject', 'pvm')
-                        );
-                        return $oldvalue;
-                }
-
                 return $input;
         }
 
@@ -445,25 +489,15 @@ class pvm_Admin extends pvm_Autohooker {
          */
         public static function settings_field_new_topic_msg() {
                 $current = pvm::get_option('bb_pvm_new_topic_msg', '');
-
-                echo '<textarea name="bb_pvm_new_topic_msg" class="large-text" rows="15" id="bb_pvm_new_topic_msg" >' . esc_attr($current) . '</textarea>';
-                //echo '<input type="text" name="bb_pvm_new_topic_msg" class="regular-text" value="' . esc_attr($current) . '" />';
-		echo '<p class="description">' . __('You can use following tags: {author} {forum_name} {title} {content} - they will be substituted', 'pvm') . '</p>';
+                if (!strlen($current)) {
+                   $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current .=__("You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.",'pvm');
+                }
+                echo '<textarea name="bb_pvm_new_topic_msg" class="large-text" rows="8" id="bb_pvm_new_topic_msg" >' . esc_attr($current) . '</textarea>';
+		echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
         }
 
 	public static function validate_new_topic_msg($input) {
-                $oldvalue = pvm::get_option('bb_pvm_new_topic_msg', '');
-
-                // Check that the resulting email is valid
-                if (!strlen($input)) {
-                        add_settings_error(
-                                'bb_pvm_new_topic_msg',
-                                'bb_pvm_new_topic_msg',
-                                __('The response should have some content', 'pvm')
-                        );
-                        return $oldvalue;
-                }
-
                 return $input;
         }
 	/**
@@ -473,25 +507,13 @@ class pvm_Admin extends pvm_Autohooker {
          */
         public static function settings_field_new_reply_subj() {
                 $current = pvm::get_option('bb_pvm_new_reply_subj', '');
-
-                //echo '<textarea name="bb_pvm_new_topic_msg" class="large-text" rows="15" id="bb_pvm_new_topic_msg" >' . esc_attr($current) . '</textarea>';
+		if (!strlen($current))
+                        $current=__('New reply in topic {title} on forum {forum}','pvm');
                 echo '<input type="text" name="bb_pvm_new_reply_subj" class="regular-text" value="' . esc_attr($current) . '" />';
-                echo '<p class="description">' . __('You can use following tags: {author} {forum_name} {title} - they will be substituted', 'pvm') . '</p>';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} - they will be substituted', 'pvm') . '</p>';
         }
 
         public static function validate_new_reply_subj($input) {
-                $oldvalue = pvm::get_option('bb_pvm_new_topic_subj', '');
-
-                // Check that the resulting email is valid
-                if (!strlen($input)) {
-                        add_settings_error(
-                          	'bb_pvm_new_reply_subj',
-                                'bb_pvm_new_reply_subj',
-                                __('The response should have subject', 'pvm')
-                        );
-                        return $oldvalue;
-                }
-
                 return $input;
         }
 
@@ -502,24 +524,141 @@ class pvm_Admin extends pvm_Autohooker {
          */
 	public static function settings_field_new_reply_msg() {
                 $current = pvm::get_option('bb_pvm_new_reply_msg', '');
-
-                echo '<textarea name="bb_pvm_new_reply_msg" class="large-text" rows="15" id="bb_pvm_new_reply_msg" >' . esc_attr($current) . '</textarea>';
-                //echo '<input type="text" name="bb_pvm_new_reply_msg" class="regular-text" value="' . esc_attr($current) . '" />';
-                echo '<p class="description">' . __('You can use following tags: {author} {forum_name} {title} {content} - they will be substituted', 'pvm') . '</p>';
+		if (!strlen($current)) {
+                   $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current .=__('You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.','pvm');
+                }
+                echo '<textarea name="bb_pvm_new_reply_msg" class="large-text" rows="8" id="bb_pvm_new_reply_msg" >' . esc_attr($current) . '</textarea>';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
         }
 	public static function validate_new_reply_msg($input) {
-                $oldvalue = pvm::get_option('bb_pvm_new_reply_msg', '');
+                return $input;
+        }
+	/*
+         * Print field for the new post message subject
+         *
+         * @see self::init()
+         */
+        public static function settings_field_new_post_subj() {
+                $current = pvm::get_option('bb_pvm_new_post_subj', '');
+		if (!strlen($current))
+                        $current=__('New post on site {site}','pvm');
+                echo '<input type="text" name="bb_pvm_new_post_subj" class="regular-text" value="' . esc_attr($current) . '" />';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {title} - they will be substituted', 'pvm') . '</p>';
+        }
 
-                // Check that the resulting email is valid
-                if (!strlen($input)) {
-                        add_settings_error(
-                                'bb_pvm_new_reply_msg',
-                                'bb_pvm_new_reply_msg',
-                                __('The response should have some content', 'pvm')
-                        );
-                        return $oldvalue;
+        public static function validate_new_post_subj($input) {
+        }
+
+	/**
+         * Print field for the new post message content
+         *
+         * @see self::init()
+         */
+	public static function settings_field_new_post_msg() {
+                $current = pvm::get_option('bb_pvm_new_post_msg', '');
+		if (!strlen($current)) {
+                   $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current .=__('You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.','pvm');
                 }
+                echo '<textarea name="bb_pvm_new_post_msg" class="large-text" rows="8" id="bb_pvm_new_post_msg" >' . esc_attr($current) . '</textarea>';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
+        }
+	public static function validate_new_post_msg($input) {
+		return $input;
+        }
 
+	/**
+         * Print field for the new comment message subject
+         *
+         * @see self::init()
+         */
+        public static function settings_field_new_comment_subj() {
+                $current = pvm::get_option('bb_pvm_new_comment_subj', '');
+		if (!strlen($current))
+                        $current=__('New comment to post {title} on {site}','pvm');
+                echo '<input type="text" name="bb_pvm_new_comment_subj" class="regular-text" value="' . esc_attr($current) . '" />';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {title} - they will be substituted', 'pvm') . '</p>';
+        }
+
+        public static function validate_new_comment_subj($input) {
+                return $input;
+        }
+
+	/**
+         * Print field for the new comment message content
+         *
+         * @see self::init()
+         */
+	public static function settings_field_new_comment_msg() {
+                $current = pvm::get_option('bb_pvm_new_comment_msg', '');
+		if (!strlen($current)) {
+                   $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current .=__("You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.",'pvm');
+                }
+                echo '<textarea name="bb_pvm_new_comment_msg" class="large-text" rows="8" id="bb_pvm_new_comment_msg" >' . esc_attr($current) . '</textarea>';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {title} {content} {link}- they will be substituted', 'pvm') . '</p>';
+        }
+	public static function validate_new_comment_msg($input) {
+                return $input;
+        }
+	/* Print field for the Send Bad Reply notofication to Author checkbox
+         *
+         * @see self::init()
+         */
+        public static function settings_field_send_bad_reply() {
+                $current = pvm::get_option('bb_pvm_send_bad_reply', '');
+
+                echo '<label><input type="checkbox" name="bb_pvm_send_bad_reply" ' . checked($current, true, false) . ' /> ';
+                _e('Send a notification about bad reply to the reply author', 'pvm');
+                echo '</label>';
+        }
+
+        /**
+         * Validate the Send to Author checkbox
+         *
+         * @param string $input
+         * @return string
+         */
+        public static function validate_send_bad_reply($input) {
+                return (bool) $input;
+        }
+
+	/**
+         * Print field for the bad reply message subject
+         *
+         * @see self::init()
+         */
+        public static function settings_field_bad_reply_subj() {
+                $current = pvm::get_option('bb_pvm_bad_reply_subj', '');
+		if (!strlen($current))
+                        $current=__('Bad reply {title} on site {site}','pvm');
+                echo '<input type="text" name="bb_pvm_bad_reply_subj" class="regular-text" value="' . esc_attr($current) . '" />';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {title} - they will be substituted', 'pvm') . '</p>';
+        }
+
+        public static function validate_bad_reply_subj($input) {
+                return $input;
+        }
+
+	/**
+         * Print field for the new reply message content
+         *
+         * @see self::init()
+         */
+	public static function settings_field_bad_reply_msg() {
+                $current = pvm::get_option('bb_pvm_bad_reply_msg', '');
+		if (!strlen($current)) {
+                   $current = __("Hi {user},\nSomeone just tried to post to the {title} topic as you, but were unable to\n",'pvm');
+                   $current.= __("authenticate as you the message send by {from}. \n",'pvm');
+                   $current.= __("If you recently tried to reply to this topic, try replying to the original topic again.\n",'pvm'); 
+		   $current.= __("If that does not work, post on the topic {link} via your browser and tell the admin.\n\n",'pvm'); 
+		   $current.= __("The admins at {site}.\n\n",'pvm');
+                }
+                echo '<textarea name="bb_pvm_bad_reply_msg" class="large-text" rows="8" id="bb_pvm_new_reply_msg" >' . esc_attr($current) . '</textarea>';
+                echo '<p class="description">' . __('You can use following tags: {user} {from} {site} {title} - they will be substituted', 'pvm') . '</p>';
+        }
+	public static function validate_bad_reply_msg($input) {
                 return $input;
         }
 
