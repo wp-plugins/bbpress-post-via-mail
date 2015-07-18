@@ -30,6 +30,7 @@ Examples available on a plugin page:
 
 == Installation ==
 Install as any other WordPress plugin - from plugin repository or upload plugin zip file to the server from wp admin area.
+Plugin need PostMark service to handle incomming mails, please set it up as described <a href="https://postviamail.unicornis.pl/configuration/">in the configuration instruction</a>
 
 == Frequently Asked Questions ==
 No Faq so far, but I will be more than happy to help. Post via <a href="https://postviamail.unicornis.pl/forums/forum/support/">support forum.</a> 
