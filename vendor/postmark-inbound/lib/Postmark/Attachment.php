@@ -20,6 +20,12 @@ Class Attachment extends \Postmark\Inbound {
     
     public function Download($directory)
     {
-        file_put_contents($directory . $this->Name, $this->_read());
+        $retval = file_put_contents($directory . $this->Name, $this->_read());
+	return $retval;
     }
+    public function DownloadToFile($filePath) 
+    {
+	$retval = file_put_contents($filePath, $this->_read());
+        return $retval;
+    } 
 }

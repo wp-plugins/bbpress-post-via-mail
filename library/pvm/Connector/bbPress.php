@@ -88,7 +88,7 @@ class pvm_Connector_bbPress {
         */
 	public function notify_new_topic( $topic_id = 0, $forum_id = 0, $anonymous_data = 0, $topic_author = 0) {
 		// JJ $user_roles = pvm::get_option( 'bb_pvm_topic_notification', array() );
-                error_log("notify_new_topic");
+         //       error_log("notify_new_topic");
                 //$user_roles[0]="administrator";
 		// bail out if no user roles found
 		//if ( !$user_roles ) {
@@ -108,65 +108,66 @@ class pvm_Connector_bbPress {
 		//	return;
 		//}
 		$user_ids = bbp_get_forum_subscribers($forum_id, true);
-                $debug_export = var_export($user_ids, true);
-                error_log("Userss:".$debug_export);
-                if (empty($user_ids)) {
-                        return false;
-                }
+        //$debug_export = var_export($user_ids, true);
+        //error_log("Userss:".$debug_export);
+        if (empty($user_ids)) return false;
 		// subscribe the users automatically
-		//foreach ($recipients as $user) {
-		//	bbp_add_user_subscription( $user->ID, $topic_id );
+        //if (pvm::get_option(' bb_pvm_topic_autosubscribe', '')) {
+        //    error_log("Autosubscribe ON");
+		//    foreach ($recipients as $user) {
+		//    	bbp_add_user_subscription( $user->ID, $topic_id );
+		//    }
 		//}
-		
+        //else error_log("Autosubscribe OFF");
 		// Get userdata for all users
-                $user_ids = array_map(function ($id) {
-                        return get_userdata($id);
+        $user_ids = array_map(function ($id) {
+             return get_userdata($id);
                 }, $user_ids);
 
 
 		// Sanitize the HTML into text
 		$content = apply_filters( 'bb_pvm_html_to_text', bbp_get_topic_content( $topic_id ) );
-
+        //error_log("Topic id". $topic_id);
+        //error_log("Forum_id". $forum_id);
 		// Build email
-                $subject = pvm::get_new_topic_subj();
-                $text = pvm::get_new_topic_msg();
-                $link = bbp_get_reply_url($reply_id);
-                $text = str_replace ('{site}',get_option( 'blogname' ),$text);
-                $subject = str_replace ('{site}',get_option( 'blogname' ),$subject);
-                $text    = str_replace ('{forum}',bbp_get_forum_title ($forum_id),$text);
-                $subject = str_replace ('{forum}',bbp_get_forum_title ($forum_id),$subject);
-                $text    = str_replace ('{title}',bbp_get_topic_title( $topic_id ),$text);
-                $subject = str_replace ('{title}',bbp_get_topic_title( $topic_id ),$subject);
-                $text    = str_replace ('{author}',$reply_author_name,$text);
-                $subject = str_replace ('{author}',$reply_author_name,$subject);
-                $text    = str_replace ('{link}',$link,$text);
-                $subject = str_replace ('{link}',$link,$subject);
-                $text    = str_replace ('{content}',$content,$text);
-                $subject = str_replace ('{content}',$content,$subject);
-                $subject = apply_filters('bb_pvm_email_subject', $subject, $reply_id, $topic_id);
-		//$text .= "You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.";
-		//$text = sprintf($text, $content, bbp_get_topic_permalink( $topic_id ) );
-		//$text = apply_filters( 'bb_pvm_topic_email_message', $text, $topic_id, $content );
-		//$subject = apply_filters( 'bb_pvm_topic_email_subject', 'Re: [' . get_option( 'blogname' ) . '] ' . bbp_get_topic_title( $topic_id ), $topic_id);
+        $reply_author_name = bbp_get_topic_author_display_name( $topic_id );
+        $subject = pvm::get_new_topic_subj();
+        $text = pvm::get_new_topic_msg();
+        $link = bbp_get_reply_url($topic_id);
+        $text = str_replace ('{site}',get_option( 'blogname' ),$text);
+        $subject = str_replace ('{site}',get_option( 'blogname' ),$subject);
+        $text    = str_replace ('{forum}',bbp_get_forum_title ($forum_id),$text);
+        $subject = str_replace ('{forum}',bbp_get_forum_title ($forum_id),$subject);
+        $text    = str_replace ('{title}',bbp_get_topic_title( $topic_id ),$text);
+        $subject = str_replace ('{title}',bbp_get_topic_title( $topic_id ),$subject);
+        $text    = str_replace ('{author}',$reply_author_name,$text);
+        $subject = str_replace ('{author}',$reply_author_name,$subject);
+        $text    = str_replace ('{link}',$link,$text);
+        $subject = str_replace ('{link}',$link,$subject);
+        $text    = str_replace ('{content}',$content,$text);
+        $subject = str_replace ('{content}',$content,$subject);
+        $subject = apply_filters('bb_pvm_email_subject', $subject, 0, $topic_id);
 
 		$options = array(
-			'author' => bbp_get_topic_author_display_name( $topic_id ),
+			'author' => $reply_author_name,
 			'id'     => $topic_id,
 		);
 
-                $message = new pvm_Message();
-                $message->set_subject( $subject );
-                $message->set_text( $text);
-                $message->set_options( $options );
-                $message->set_reply_address_handler( function ( WP_User $user, pvm_Message $message ) use ( $topic_id ) {
-                        return pvm::get_reply_address( $reply_id, $user );
-                } );
-                
-                $message->set_author( get_the_author_meta( 'display_name', $post->post_author ) );
-                $debug_export = var_export($message, true);
-                error_log ("Message nt:".$debug_export);
-        	//$this->handler->send_mail( $user_ids, $message );
-                $this->send_mail($user_ids, $message);
+        $message = new pvm_Message();
+        $message->set_subject( $subject );
+        $message->set_text( $text);
+        $message->set_options( $options );
+        $message->set_reply_address_handler( function ( WP_User $user, pvm_Message $message ) use ( $topic_id ) {
+                                                return pvm::get_reply_address( $topic_id, $user );
+                                           } );
+        //$post = get_post($topic_id);
+        //$debug_export = var_export($post, true);
+        //error_log ("Post :".$debug_export);
+        $message->set_author( $reply_author_name );
+        //$debug_export = var_export($message, true);
+        //error_log ("Message nt:".$debug_export);
+        //$this->handler->send_mail( $user_ids, $message );
+        $this->send_mail($user_ids, $message);
 		//$this->handler->send_mail( $recipients, $subject, $text, $options );
 
 		do_action( 'bbp_post_notify_topic_subscribers', $topic_id, $user_ids );
@@ -179,7 +180,7 @@ class pvm_Connector_bbPress {
 	 * @wp-filter bbp_new_reply 1
 	 */
 	public function notify_on_reply( $reply_id = 0, $topic_id = 0, $forum_id = 0, $anonymous_data = false, $reply_author = 0 ) {
-		error_log("notify_on_reply");
+		//error_log("notify_on_reply");
                 if ($this->handler === null) {
 			return false;
 		}
@@ -254,16 +255,16 @@ class pvm_Connector_bbPress {
 		$message->set_subject( $subject );
 		$message->set_text( $text);
 		$message->set_options( $options );
-                $message->set_reply_address_handler( function ( WP_User $user, pvm_Message $message ) use ( $topic_id ) {
+        $message->set_reply_address_handler( function ( WP_User $user, pvm_Message $message ) use ( $topic_id ) {
 			return pvm::get_reply_address( $topic_id, $user );
 		} );
-                // JJ $message->set_author( get_the_author_meta( 'display_name', $post->post_author ) );
+        // JJ $message->set_author( get_the_author_meta( 'display_name', $post->post_author ) );
 		$message->set_author($reply_author_name);
 		$debug_export = var_export($message, true);
-                //error_log ("Message:".$debug_export);
+        //error_log ("Message:".$debug_export);
 
-                //$this->handler->send_mail( $user_ids, $message );
-                $this->send_mail($user_ids, $message);
+        //$this->handler->send_mail( $user_ids, $message );
+        $this->send_mail($user_ids, $message);
 		do_action( 'bbp_post_notify_subscribers', $reply_id, $topic_id, $user_ids );
 
 		return true;
@@ -275,47 +276,64 @@ class pvm_Connector_bbPress {
 	}
 
 	public function handle_insert( $value, pvm_Reply $reply ) {
-                $debug_export = var_export($reply, true);
-                error_log ("Reply value:".$debug_export);
-                if ( ! empty( $value ) ) {
+        //DebugDump($reply);
+        //error_log ("Reply value:".$debug_export);
+        if ( ! empty( $value ) ) {
 			return $value;
 		}
-                //$debug_export = var_export($reply, true);
-                //error_log ("Reply :".$debug_export);
+        //$debug_export = var_export($reply, true);
+        //error_log ("Reply :".$debug_export);
 		$post = get_post( $reply->post );
-                //$debug_export = var_export($post, true);
-                //error_log ("Post :".$debug_export);
+        //$debug_export = var_export($post, true);
+        //error_log ("Post :".$debug_export);
 		if (! $post)
 			return $value;
 		if ( ! $this->is_allowed_type( $post->post_type ) ) {
 			return $value;
 		}
-                //error_log ("QQ");
 		$user = $reply->get_user();
-                //$debug_export = var_export($user, true);
-       	       	//error_log ("User:".$debug_export);
+        //$debug_export = var_export($user, true);
+       	//error_log ("User:".$debug_export);
 		if (! $reply->is_valid() ) {
 			pvm::notify_invalid( $user, $reply->from, bbp_get_reply_url($reply->post),bbp_get_topic_title( $reply->post ) );
 			return false;
 		}
-                //error_log ("Reply is VALID ;-)");
 		$new_reply = array(
-			'post_parent'   => $reply->post, // topic ID
-			'post_author'   => $user->ID,
-			'post_content'  => $reply->parse_body(),
-			'post_title'    => $reply->subject,
+			'post_parent'       => $reply->post, // topic ID
+			'post_author'       => $user->ID,
+			'post_content'      => $reply->parse_body(),
+            'post_attachments'  => $reply->parse_attachments(),
+			'post_title'        => $reply->subject,
 		);
+        //$debug_export = var_export($new_reply, true);
+        //error_log("New reply: ". $debug_export);
 		$meta = array(
 			'author_ip' => '127.0.0.1', // we could parse Received, but it's a pain, and inaccurate
 			'forum_id' => bbp_get_topic_forum_id($reply->post),
 			'topic_id' => $reply->post
 		);
-                //$debug_export = var_export($new_reply, true);
-                //error_log ("Reply to be insterted:".$debug_export);
+        // Subscribe to topic if needed
+        if (pvm::get_option(' bb_pvm_topic_autosubscribe', '')) {
+            error_log("Autosubscribe ON");
+            bbp_add_user_subscription( $user->ID, $reply->post );
+        }
+        else error_log("Autosubscribe OFF");
+        //$debug_export = var_export($new_reply, true);
+        //error_log ("Reply to be insterted:".$debug_export);
 		//$debug_export = var_export($meta, true);
-                //error_log ("Reply meta:".$debug_export);
+        //error_log ("Reply meta:".$debug_export);
 		$reply_id = bbp_insert_reply($new_reply, $meta);
-
+        $attchs = $new_reply['post_attachments'];
+        //$debug_export = var_export($attchs, true);
+        //error_log("Attachments!: ". $debug_export);
+        foreach($attchs as $attachment) {
+            //$debug_export = var_export($attachment, true);
+            //error_log("Attachments #: ". $debug_export);
+            $attachment['post_parrent'] = $reply_id;
+            $attachment['post_author']  = $user->ID;
+            $id = wp_insert_attachment($attachment, $attachment['filename'], $reply_id);
+            //error_log("after wp_insert_attachment: attachement id:". $id);
+        }
 		do_action( 'bbp_new_reply', $reply_id, $meta['topic_id'], $meta['forum_id'], false, $new_reply['post_author'] );
 
 		// bbPress removes the user's subscription because bbp_update_reply() is hooked to 'bbp_new_reply' and it checks for $_POST['bbp_topic_subscription']
@@ -402,11 +420,9 @@ class pvm_Connector_bbPress {
 		$site_id = get_current_blog_id();
 		$default = isset( $defaults[ $field ] ) ? $defaults[ $field ] : false;
 		$current = isset( $settings[ $field ] ) ? $settings[ $field ] : $default;
-                //error_log("Default=".$default);
-		//error_log("Current=".$current);
 		$notifications = $this->get_available_settings();
-                $debug_export = var_export($notifications, true);
-                error_log("Notifications -> ".$debug_export);
+        //$debug_export = var_export($notifications, true);
+        //error_log("Notifications -> ".$debug_export);
 		if ($notifications)
 			foreach ( $notifications as $value => $title ) {
 				printf('<label><textarea name="%s" class="large-text" rows="15">%s</textarea></label>',

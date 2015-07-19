@@ -164,8 +164,7 @@ class pvm_Handler_Postmark implements pvm_Handler {
 		$reply->body = $inbound->TextBody();
                 $reply->from = $inbound->FromEmail();
 		$to = $inbound->Recipients();
-                $debug_export = var_export($to, true);
-                //error_log ("Inbound to address:".$debug_export);
+		$reply->attachments = $inbound->Attachments();
 		list($reply->post, $reply->site, $reply->user, $reply->nonce) = pvm_Reply::parse_to($to[0]->Email);
 
 		$reply_id = $reply->insert();

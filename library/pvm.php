@@ -194,7 +194,6 @@ class pvm extends pvm_Autohooker {
 		// Build email
 		$notify = self::get_option('bb_pvm_send_bad_reply', false);
 		if (!$notify) return;
-		//error_log("function notify_invalid:".$notify);
                 $site=get_option('blogname');
                 $subject=get_option('bb_pvm_bad_reply_subj', false);
 		$text = self::get_option('bb_pvm_bad_reply_msg', false);
@@ -209,7 +208,6 @@ class pvm extends pvm_Autohooker {
                 $subject = str_replace('{title}',$title,$subject);
                 
 		$text = apply_filters( 'bb_pvm_email_message_invalid', $text, $user->ID );
-		error_log("UserMail:".$user->user_email." Subject:".$subject." Text:". $text);
                 wp_mail($user->user_email, $subject, $text);
 	}
 

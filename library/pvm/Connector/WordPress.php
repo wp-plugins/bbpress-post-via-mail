@@ -51,18 +51,20 @@ class pvm_Connector_WordPress {
 
 		$messages = array();
 		//$debug_export = var_export($users, true);
-                //error_log("Users -> ".$debug_export);
+        //error_log("Users -> ".$debug_export);
 		foreach ($users as $user) {
 			$to = $user->user_email;
-                        $subj = $message->get_subject();
-                        $reply_to=$message->get_reply_address($user);
+            $subj = $message->get_subject();
+            $reply_to=$message->get_reply_address($user);
 			$headers = array();
-
+            $type = '';
 			if ( $text = $message->get_text() ) {
 				$data = $text;
+                $type = 'text/plain';
 			}
 			if ( $html = $message->get_html() ) {
 				$data = $html;
+                $type = 'text/html';
 			}
 
 			// Set the message ID if we've got one
@@ -95,9 +97,11 @@ class pvm_Connector_WordPress {
 					'Value' => $references,
 				);
 			}
-  			$debug_export = var_export($headers, true);
-                        $header[]='Reply-To: '.$reply_to;
-                        //error_log("Message -> To:".$to." Headers:".$header." Subject:".$subj." Data:".$data);
+            $header[]='Reply-To: '.$reply_to;
+            $header[]='Content-Type: '. $type;
+            //$debug_export = var_export($header, true);
+            //error_log("Headers: ".$debug_export);
+            //error_log("Message -> To:".$to." Subject:".$subj." Data:".$data);
 			wp_mail( $to, $subj, $data, $header );
 			//$messages[ $user->ID ] = $this->send_single($data);
 		}
@@ -105,13 +109,14 @@ class pvm_Connector_WordPress {
 	}
 
 	/**
-	 * Notify user roles on new topic
+	 * Notify user roles on new post
 	 */
 	public function notify_on_publish( $id = 0, $post = null ) {
 		if ( empty( $this->handler ) || ! pvm::is_enabled_for_site() ) {
 			return;
 		}
-
+        //$debug_export = var_export($post, true);
+        //error_log("Post".$debug_export);
 		// Double-check status
 		if ( get_post_status( $id ) !== 'publish' ) {
 			return;
@@ -597,11 +602,11 @@ class pvm_Connector_WordPress {
 			return $value;
 		}
 		$comment_parent = null;
-                error_log("Reply_post WP:".$reply->post);
-		$debug_export = var_export($reply, true);
-                error_log("Reply WP  -> ".$debug_export);
-                if (strpos($reply->post,"_"))
-                	list( $type, $parent_id ) = explode( '_', $reply->post, 2 );
+        //error_log("Reply_post WP:".$reply->post);
+		//$debug_export = var_export($reply, true);
+        //error_log("Reply WP  -> ".$debug_export);
+        if (strpos($reply->post,"_"))
+            list( $type, $parent_id ) = explode( '_', $reply->post, 2 );
 		else {
 			$type='bbpress';
 			$parent_id=$reply->post;

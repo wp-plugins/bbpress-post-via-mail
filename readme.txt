@@ -4,7 +4,7 @@ Donate link: https://postviamail.unicornis.pl/donation
 Tags: bbpress, post via mail
 Requires at least: WP 3.8
 Tested up to: 4.2.2
-Version: 1.1
+Version: 1.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
@@ -43,17 +43,21 @@ No Faq so far, but I will be more than happy to help. Post via <a href="https://
 
 
 == Changelog ==
+1.1.1
+    Fixed notification file formatting for html.
+    Added attachments (beta)
+ 
 1.1 
-   Added customization for reply messages.
+    Added customization for reply messages.
 
 1.0.2
-   Added reply customization config, but messages still hardcoded.
+    Added reply customization config, but messages still hardcoded.
 
 1.0.1 
-   Initial WP plugin in repository.
+    Initial WP plugin in repository.
 
 1.0
-   Initial code
+    Initial code
 
  == Upgrade Notice ==
 None

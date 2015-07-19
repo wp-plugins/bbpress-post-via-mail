@@ -40,17 +40,18 @@ class pvm_Admin extends pvm_Autohooker {
 		register_setting( 'bb_pvm_options', 'bb_pvm_handler_options', array(__CLASS__, 'validate_handler_options') );
 
 		register_setting( 'bb_pvm_options', 'bb_pvm_new_topic_subj', array(__CLASS__, 'validate_new_topic_subj') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_new_topic_msg', array(__CLASS__, 'validate_new_topic_msg') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_subj', array(__CLASS__, 'validate_new_reply_subj') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_msg', array(__CLASS__, 'validate_new_reply_msg') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_new_post_subj', array(__CLASS__, 'validate_new_post_subj') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_new_post_msg', array(__CLASS__, 'validate_new_post_msg') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_new_comment_subj', array(__CLASS__, 'validate_new_comment_subj') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_new_comment_msg', array(__CLASS__, 'validate_new_comment_msg') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_new_topic_msg', array(__CLASS__, 'validate_new_topic_msg') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_subj', array(__CLASS__, 'validate_new_reply_subj') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_new_reply_msg', array(__CLASS__, 'validate_new_reply_msg') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_topic_autosubscribe', array(__CLASS__, 'validate_topic_autosubscribe') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_new_post_subj', array(__CLASS__, 'validate_new_post_subj') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_new_post_msg', array(__CLASS__, 'validate_new_post_msg') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_new_comment_subj', array(__CLASS__, 'validate_new_comment_subj') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_new_comment_msg', array(__CLASS__, 'validate_new_comment_msg') );
           
 		register_setting( 'bb_pvm_options', 'bb_pvm_send_bad_reply', array(__CLASS__, 'validate_send_bad_reply') );
-	      	register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_subj', array(__CLASS__, 'validate_bad_reply_subj') );
-                register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_msg', array(__CLASS__, 'validate_bad_reply_msg') );
+	    register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_subj', array(__CLASS__, 'validate_bad_reply_subj') );
+        register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_msg', array(__CLASS__, 'validate_bad_reply_msg') );
 
 		// Global Settings
 		add_settings_section('bb_pvm_options_global', __('Main Settings','pvm'), array(__CLASS__, 'settings_section_main'), 'bb_pvm_options');
@@ -75,35 +76,37 @@ class pvm_Admin extends pvm_Autohooker {
 			$connector->register_settings();
 		}
 
-                add_settings_section('bb_pvm_options_messages', __('Notification messages','pvm'), array(__CLASS__, 'settings_section_messages'), 'bb_pvm_options');
+        add_settings_section('bb_pvm_options_messages', __('Notification messages','pvm'), array(__CLASS__, 'settings_section_messages'), 'bb_pvm_options');
 		add_settings_field('bb_pvm_options_global_send_bad_reply', __('Send Bad Reply notification','pvm'),
-                                        array(__CLASS__, 'settings_field_send_bad_reply'), 'bb_pvm_options', 'bb_pvm_options_global');
+                          array(__CLASS__, 'settings_field_send_bad_reply'), 'bb_pvm_options', 'bb_pvm_options_global');
 		add_settings_field('bb_pvm_options_messages_bad_reply_subj',__('Bad Reply Subject','pvm'),
-                                array(__CLASS__, 'settings_field_bad_reply_subj'), 'bb_pvm_options', 'bb_pvm_options_messages');
-                add_settings_field('bb_pvm_options_messages_bad_reply_msg', __('Bad Reply Message','pvm'),
-                                array(__CLASS__, 'settings_field_bad_reply_msg'), 'bb_pvm_options', 'bb_pvm_options_messages');
+                          array(__CLASS__, 'settings_field_bad_reply_subj'), 'bb_pvm_options', 'bb_pvm_options_messages');
+        add_settings_field('bb_pvm_options_messages_bad_reply_msg', __('Bad Reply Message','pvm'),
+                          array(__CLASS__, 'settings_field_bad_reply_msg'), 'bb_pvm_options', 'bb_pvm_options_messages');
  		
 		add_settings_section('bb_pvm_options_messagesWP', __('Notification messages for WordPress','pvm'), array(__CLASS__, 'settings_section_messagesWP'), 'bb_pvm_options');
 		add_settings_field('bb_pvm_options_messages_new_post_subj',__('New Post Subject','pvm'),
-				array(__CLASS__, 'settings_field_new_post_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
-        	add_settings_field('bb_pvm_options_messages_new_post_msg', __('New Post Message','pvm'), 
-				array(__CLASS__, 'settings_field_new_post_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+				          array(__CLASS__, 'settings_field_new_post_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+        add_settings_field('bb_pvm_options_messages_new_post_msg', __('New Post Message','pvm'), 
+				          array(__CLASS__, 'settings_field_new_post_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
 		add_settings_field('bb_pvm_options_messages_new_comment_subj',__('New Comment Subject','pvm'),
-				array(__CLASS__, 'settings_field_new_comment_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
-        	add_settings_field('bb_pvm_options_messages_new_comment_msg', __('New Comment Message','pvm'), 
-				array(__CLASS__, 'settings_field_new_comment_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+				          array(__CLASS__, 'settings_field_new_comment_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
+        add_settings_field('bb_pvm_options_messages_new_comment_msg', __('New Comment Message','pvm'), 
+				          array(__CLASS__, 'settings_field_new_comment_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
 	        
 		if (is_plugin_active('bbpress/bbpress.php')) {
 			 add_settings_section('bb_pvm_options_messagesBBP', __('Notification messages bbPress','pvm'), array(__CLASS__, 'settings_section_messagesBBP'), 'bb_pvm_options');
-                        add_settings_field('bb_pvm_options_messages_new_topic_subj',__('New Topic Subject','pvm'),
+             add_settings_field('bb_pvm_options_messages_new_topic_subj',__('New Topic Subject','pvm'),
                                 array(__CLASS__, 'settings_field_new_topic_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
-                        add_settings_field('bb_pvm_options_messages_new_topic_msg', __('New Topic Message','pvm'),
+             add_settings_field('bb_pvm_options_messages_new_topic_msg', __('New Topic Message','pvm'),
                                 array(__CLASS__, 'settings_field_new_topic_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
-                        add_settings_field('bb_pvm_options_messages_new_reply_subj',__('New Reply Subject','pvm'),
+             add_settings_field('bb_pvm_options_messages_new_reply_subj',__('New Reply Subject','pvm'),
                                 array(__CLASS__, 'settings_field_new_reply_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
-                        add_settings_field('bb_pvm_options_messages_new_reply_msg', __('New Reply Message','pvm'),
+             add_settings_field('bb_pvm_options_messages_new_reply_msg', __('New Reply Message','pvm'),
                                 array(__CLASS__, 'settings_field_new_reply_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
-                }	
+             add_settings_field('bb_pvm_options_topic_autosubscribe',__('Autosubscribe to the Topic on Reply ','pvm'),
+                                array(__CLASS__, 'settings_field_topic_autosubscribe'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
+         }	
 
 		pvm_Manager::register_default_settings();
 	}
@@ -471,11 +474,11 @@ class pvm_Admin extends pvm_Autohooker {
          * @see self::init()
          */
         public static function settings_field_new_topic_subj() {
-                $current = pvm::get_option('bb_pvm_new_topic_subj', '');
-                if (!strlen($current))
-			$current=__('New topic {title} on forum {forum}','pvm');
-                echo '<input type="text" name="bb_pvm_new_topic_subj" class="regular-text" value="' . esc_attr($current) . '" />';
-                echo '<p class="description">' . __('You can use following tags: {site} {author} {forum} {title} - they will be substituted', 'pvm') . '</p>';
+            $current = pvm::get_option('bb_pvm_new_topic_subj', '');
+            if (!strlen($current))
+			    $current=__('New topic {title} on forum {forum}','pvm');
+            echo '<input type="text" name="bb_pvm_new_topic_subj" class="regular-text" value="' . esc_attr($current) . '" />';
+            echo '<p class="description">' . __('You can use following tags: {site} {author} {forum} {title} - they will be substituted', 'pvm') . '</p>';
         }
 
         public static function validate_new_topic_subj($input) {
@@ -555,6 +558,24 @@ class pvm_Admin extends pvm_Autohooker {
          *
          * @see self::init()
          */
+    public static function settings_field_topic_autosubscribe() {
+        $current = pvm::get_option('bb_pvm_topic_autosubscribe', '');
+
+        echo '<label><input type="checkbox" name="bb_pvm_topic_autosubscribe" ' . checked($current, true, false) . ' /> ';
+        _e('Subscribe to forum topic when replied to it via mail', 'pvm');
+        echo '</label>';
+    }
+
+    /**
+     * Validate the Send to Author checkbox
+     *
+     * @param string $input
+     * @return string
+     */
+    public static function validate_topic_autosubscribe($input) {
+        return (bool) $input;
+    }
+
 	public static function settings_field_new_post_msg() {
                 $current = pvm::get_option('bb_pvm_new_post_msg', '');
 		if (!strlen($current)) {
