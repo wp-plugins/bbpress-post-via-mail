@@ -7,7 +7,7 @@
 /*
 Plugin Name: bbPress Post Via Mail
 Description: Reply to posts, comments, bbPress topics by e-mail. Send notifications about new topics and replies as well.
-Version: 1.1
+Version: 1.1.1
 Author: Unicornis, parts by Ryan McCue
 Author URI: https://postviamail.unicornis.pl/
 */
@@ -42,6 +42,9 @@ function pvm_activation() {
 function pvm_deactivation() {
 	wp_clear_scheduled_hook( 'pvm_check_inbox' );
 }
+
+
+
 
 function pvm_autoload($class) {
 	if ( strpos( $class, 'EmailReplyParser' ) === 0 ) {
