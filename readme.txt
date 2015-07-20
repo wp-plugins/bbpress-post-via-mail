@@ -9,8 +9,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
 
-Sends notifications about new posts and replies on bbPress forums and allows replying to them simply by sending e-mail reply 
-to notification message.
+Allows subscribers to reply via mail to new Posts on Wordpress site and new Topics/Replies on bbPress forums by aswering to the customized notification message.
 
 == Description ==
 Reply to any post, forum topic and forum reply **simply by sending e-mail reply**.
