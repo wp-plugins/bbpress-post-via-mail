@@ -9,7 +9,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
 
-Allows subscribers to reply via mail to new Posts on Wordpress site and new Topics/Replies on bbPress forums by aswering to the customized notification message.
+Allows subscribers to reply via mail to new Posts on site and new Topics/Replies on bbPress forums by aswering to the customized notification message.
 
 == Description ==
 Reply to any post, forum topic and forum reply **simply by sending e-mail reply**.
@@ -17,9 +17,11 @@ Reply to any post, forum topic and forum reply **simply by sending e-mail reply*
 Plugin sends a notification message with customized Reply-to address, which enables to pass the reply to the correct place and post it to the Wordpress. 
 It strips away the quoted part of the message, so only the reply gets posted to the forum.
 
-Requires Postmark account to hook the incomming emails.
+It works for WorpPress **Posts** and bbPress forum **Topics** and **Replies**
 
-Unique hash value in each message provides additional security.
+Convinient, fast and **secured by HMAC hash**
+
+Requires Postmark account to hook the incomming emails.
 
 Examples available on a plugin page:
 
@@ -29,6 +31,7 @@ Examples available on a plugin page:
 
 == Installation ==
 Install as any other WordPress plugin - from plugin repository or upload plugin zip file to the server from wp admin area.
+
 Plugin need PostMark service to handle incomming mails, please set it up as described <a href="https://postviamail.unicornis.pl/configuration/">in the configuration instruction</a>
 
 == Frequently Asked Questions ==
