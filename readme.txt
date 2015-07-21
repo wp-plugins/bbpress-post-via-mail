@@ -9,7 +9,8 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
 
-Allows subscribers to reply via mail to new Posts on site and new Topics/Replies on bbPress forums by aswering to the customized notification message.
+Sends notifications about new posts and replies on bbPress forums and allows replying to them simply by sending e-mail reply 
+to notification message.
 
 == Description ==
 Reply to any post, forum topic and forum reply **simply by sending e-mail reply**.
@@ -17,11 +18,9 @@ Reply to any post, forum topic and forum reply **simply by sending e-mail reply*
 Plugin sends a notification message with customized Reply-to address, which enables to pass the reply to the correct place and post it to the Wordpress. 
 It strips away the quoted part of the message, so only the reply gets posted to the forum.
 
-It works for WorpPress **Posts** and bbPress forum **Topics** and **Replies**
-
-Convinient, fast and **secured by HMAC hash**
-
 Requires Postmark account to hook the incomming emails.
+
+Unique hash value in each message provides additional security.
 
 Examples available on a plugin page:
 
@@ -31,11 +30,10 @@ Examples available on a plugin page:
 
 == Installation ==
 Install as any other WordPress plugin - from plugin repository or upload plugin zip file to the server from wp admin area.
-
-Plugins need PostMark service to handle incomming mails, please set it up as described <a href="https://postviamail.unicornis.pl/configuration/">in the configurations instruction</a>
+Plugin need PostMark service to handle incomming mails, please set it up as described <a href="https://postviamail.unicornis.pl/configuration/">in the configuration instruction</a>
 
 == Frequently Asked Questions ==
-No Faq so far, but I will be more than happy to help. Some useful information available on <a href="https://postviamail.unicornis.pl">the plugin page</a>. Post your questions via <a href="https://postviamail.unicornis.pl/forums/forum/support/">support forum</a> to help me grow the FAQ.
+No Faq so far, but I will be more than happy to help. Post via <a href="https://postviamail.unicornis.pl/forums/forum/support/">support forum.</a> 
 
 == Screenshots ==
 1. Sample post and a notification mail
@@ -45,6 +43,9 @@ No Faq so far, but I will be more than happy to help. Some useful information av
 
 
 == Changelog ==
+1.1.2
+    Quick fix for fatal error due to some dependencies on the other plugin on my dev site. My bad, apologies.	
+
 1.1.1
     Fixed notification file formatting for html.
     Added attachments (beta)

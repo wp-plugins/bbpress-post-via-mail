@@ -23,6 +23,9 @@ function debug_dump($v) {
    }
 }
 
+function filename_fix($filename) {
+    return str_replace('%', '', urlencode($filename));
+}
 
 class pvm_Reply {
 	public $from;
@@ -35,7 +38,9 @@ class pvm_Reply {
         
 	public function __construct() {
 	}
-
+    function filename_fix($filename) {
+        return str_replace('%', '', urlencode($filename));
+    }
 //	function pvm_handle_upload(&$file, $overrides = false, $time = null) {
 //    	// The default error handler.
 //    	if (!function_exists('wp_handle_upload_error')) {
@@ -160,7 +165,7 @@ class pvm_Reply {
 		//$debug_export = var_export($this->attachments, true);
         //error_log("Attachments: ".$debug_export."\n\n");
 		//$debug_export = var_export($email, true);
-        //error_log("Email: ".$debug_export."\n\n");               
+        //error_log("Email: ".$debug_export."\n\n");
 		//$debug_export = var_export($fragments, true);
        	//error_log("Fragments: ".$debug_export);
 		foreach ($fragments as $fragment) {
@@ -171,7 +176,7 @@ class pvm_Reply {
 			}
 			elseif ($fragment->isQuoted()) {
 				// Remove leading quote symbols
-				$quoted = preg_replace('/^> */m', '', $fragment->getContent());		
+				$quoted = preg_replace('/^> */m', '', $fragment->getContent());
 				// Reparse to ensure that we strip signatures from here too
 				$subfragments = EmailReplyParser::read($quoted);
 				$subparts = array();
@@ -186,45 +191,83 @@ class pvm_Reply {
 		$content = implode("\n", $parts);
 		return $content;
 	}
-
+    
     public function parse_attachments() {
-		$upload_dir = wp_upload_dir();
+	    function prepare_error_msg($reason,$valueOK=0,$value=0,$filename='') {
+            $error_msg = $reason;
+            if ($valueOK) {
+                $error_msg .= " (".$value.' ';
+                $error_msg .= __("instead of",'pvm');
+                $error_msg .= " ".$valueOK;
+                if ($filename) {
+                    $error_msg .= " ";
+                    $error_msg .= __("for attachment ",'pvm');
+                    $error_msg .= ": ".$filename;
+                }
+                $error_msg .= ")";
+            }
+            return $error_msg;
+        }
+    	$upload_dir = wp_upload_dir();
         //$debug_export = var_export($upload_dir, true);
         //error_log("Upload_dir: ".$debug_export."\n\n");
 		$action = 'wp_handle_upload';
         $attachment_list = array ();
+        $errors = array ();
+        $process_attachments   = pvm::get_option('bb_pvm_attachments', '');
+        $max_attachment_num     = pvm::get_option('bb_pvm_attachments_num', '');
+        $max_attachment_size    = pvm::get_option('bb_pvm_attachments_size', '')*1024;
+        $attachments_allowed    = pvm::get_option('bb_pvm_attachments_allowed', '');
+        $attachments_ignored    = pvm::get_option('bb_pvm_attachments_ignored', '');
+        error_log("Process attachment = ".$process_attachments." Max att. num= ". $max_attachment_num." Max att. size= ". $max_attachment_size);
+        error_log("Attachment allowed = ".$attachments_allowed);
+        error_log("Attachment ignored = ".$attachments_ignored);
+        if (!$process_attachments)
+            return;
         foreach($this->attachments as $attachment) {
-			$tmpFile = tempnam(get_temp_dir(), 'pvm');
+            $filename = $this->filename_fix($attachment->Name);
+            error_log("Processing: ".$filename);
+            $filename = wp_unique_filename($upload_dir["path"], $filename);
+            $path_parts = pathinfo($filename);
+            //$debug_export = var_export($path_parts,true);
+            $attachment_name = $path_parts['filename'];
+            $attachment_ext  = ".".$path_parts['extension'];
+            error_log("ext: ".$attachment_ext);
+            if (strpos($attachments_ignored,$attachment_ext)!==false) {
+                error_log(prepare_error_msg(__('Attachment','pvm').' '.$attachment->Name.' '.__("ignored by extension: ",'pvm').$attachment_ext));
+                continue;
+            }
+            error_log("Attachment mime type: ". $attachment->ContentType);
+            error_log("Strpos: ".strpos($attachments_ignored,$attachment->ContentType)===false);
+            if (strpos($attachments_ignored,$attachment->ContentType)!==false) {
+                error_log(prepare_error_msg(__('Attachment','pvm').' '.$attachment->Name.' '.__("ignored by MIME type: ",'pvm').$attachment->ContentType));
+                continue;
+            }
+            if ((strpos($attachments_allowed,$attachment_ext) === false) && (strpos($attachments_allowed,$attachment->ContentType) === false)) {
+                $errors[] = prepare_error_msg(__('Attachment','pvm').' '.$attachment->Name.' '.__("not allowed by extension nor Mime type",'pvm')." ".$attachment->ContentType);
+                error_log(prepare_error_msg(__('Attachment','pvm').' '.$attachment->Name.' '.__("not allowed by extension nor Mime type",'pvm')." ".$attachment->ContentType));
+                continue;
+            }
+            if (count($attachment_list) >= $max_attachment_num) {
+                $errors[] = prepare_error_msg(__('Maximum number of attachments exceeded, ommiting remaining','pvm'),$max_attachment_num,count($attachment_list)+1);
+                break;
+            }
+            if ($attachment->ContentLength > $max_attachment_size) {
+                $errors[] = prepare_error_msg(__('Maximum size of attachment exceeded, skipped this one','pvm'),$max_attachment_size,$attachment->ContentLength,$attachment->Name);
+                error_log(prepare_error_msg(__('Maximum size of attachment exceeded, skipped this one','pvm'),$max_attachment_size,$attachment->ContentLength,$attachment->Name));
+                continue;;
+            }
+			$tmpFile = tempnam(get_temp_dir(), 'pvm-');
     	    if ($tmpFile !== false) {
-        		$downloaded_size=$attachment->DownloadToFile($tmpFile);
-                //error_log("downloaded_sizze ".$downloaded_size);
-                //error_log("attachment->ContentLength ".$attachment->ContentLength);
-        		if ($downloaded_size != $attachment->ContentLength) { 
+        		$downloaded_size = $attachment->DownloadToFile($tmpFile);
+        		if ($downloaded_size != $attachment->ContentLength) {
 					error_log("Problem downloading file ".$tmpFile. "for attachment ".$attachment->Name."Downloaded".$downloaded_size." instead of ".$attachment->ContentLength);
 			        continue;
                 }
             }
-			//if (!file_exists($tmpFile))
-			//	error_log("The file was not created!!");
-            //else
-			//	error_log("File created OK: ".$tmpFile);
-	        //$overrides = array('test_form' => false);
-            //$file = array(	'name' => $attachment->Name,
-            //                'type' => $attachment->ContentType,
-            //            	'size' => $attachment->ContentLength,
-            //            	'tmp_name' => $tmpFile,
-            //              	'error' => 0
-            //        	);
-			//$file['name'] = filename_fix($file['name']);
-        	$filename = filename_fix($attachment->Name);
-            $filename = wp_unique_filename($upload_dir["path"], $filename);
-            $path_parts = pathinfo($filename);
-            $debug_export = var_export($path_parts,true);
-            $attachment_name = $path_parts['filename'];
+            
         	// Move the file to the uploads dir
         	$new_file = $upload_dir["path"] . "/$filename";
-            //if (!file_exists($tmpFile)) error_log("Nima pliku ".$file['tmp_name']);
-			//else error_log("Jest plik ".$file['tmp_name']);
         	if (false === rename($tmpFile, $new_file)) {
                 error_log("Rename failed new file: ". $new_file. " old file: ".$tmpFile);
                 continue ;
@@ -232,16 +275,10 @@ class pvm_Reply {
             // Set correct file permissions
     	    $stat = stat(dirname($new_file));
     		$perms = $stat['mode'] & 0000666;
-    		if (!chmod($new_file, $perms)) {
+    		if (!chmod($new_file, $perms))
         		error_log("upload: permissions not changed". $new_file);
-    		//} else {
-        	//	debug_dump("upload: permissions not changed $new_file");
-    		}
     		// Compute the URL
     		$url = $upload_dir['url'] . "/$filename";
-    		//debug_dump("upload: before apply_filters");
-            //$debug_export = var_export(array('file' => $new_file, 'url' => $url,'type' => $attachment->ContentType), true);
-            //error_log("apply_filters wp_handle_upload on: ".$debug_export);
     		$return = apply_filters('wp_handle_upload', array('file' => $new_file, 'url' => $url,'type' => $attachment->ContentType));
             $attachment_list[] = array ('post_mime_type'=>$attachment->ContentType,
                                         'guid'=>$url,
@@ -251,10 +288,13 @@ class pvm_Reply {
                                         'post_content'=>'',
                                         'post_author'=>1,
                                         'filename' => $new_file);
-            //$debug_export = var_export($attachment_list, true);
-            //error_log("Attachment list: ". $debug_export);
         }
-        return $attachment_list;
+        $debug_export = var_export($attachment_list, true);
+        error_log("Attachment list: ". $debug_export);
+        error_log("Count: ".count($attachment_list));
+        $debug_export = var_export($errors, true);
+        error_log("Final error msg: ".$debug_export);
+        return array ('attachments' => $attachment_list,'errors'=>$errors);
     }
 
 	public function get_user() {

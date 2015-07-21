@@ -30,21 +30,26 @@ class pvm_Connector_bbPress {
 		if ( $author = $message->get_author() ) {
 			$from = sprintf( '%s <%s>', $author, $from );
 		}
-
+        //$debug_export = var_export($message, true);
+        //error_log("Message to be sent:". $debug_export);
 		$messages = array();
+        $data="";
+        if ( $text = $message->get_text() ) {
+            $data = $text;
+        }
+        if ( $html = $message->get_html() ) {
+            $data = $html;
+        }
+        if (!strlen($data))
+        {
+            error_log("pvm: Empty message to be sent");
+            return;
+        }
 		foreach ($users as $user) {
 			$to = $user->user_email;
                         $subj = $message->get_subject();
                         $reply_to=$message->get_reply_address($user);
 			$headers = array();
-
-			if ( $text = $message->get_text() ) {
-				$data = $text;
-			}
-			if ( $html = $message->get_html() ) {
-				$data = $html;
-			}
-
 			// Set the message ID if we've got one
 			if ( ! empty( $options['message-id'] ) ) {
 				$headers = array(
@@ -75,9 +80,9 @@ class pvm_Connector_bbPress {
 					'Value' => $references,
 				);
 			}
-  			$debug_export = var_export($headers, true);
-                        $header[]='Reply-To: '.$reply_to;
-                        //error_log("Message -> To:".$to." Headers:".$header." Subject:".$subj." Data:".$data);
+  			//$debug_export = var_export($headers, true);
+            $header[]='Reply-To: '.$reply_to;
+            //error_log("Message -> To:".$to." Subject:".$subj." Data:".$data);
 			wp_mail( $to, $subj, $data, $header );
 			//$messages[ $user->ID ] = $this->send_single($data);
 		}
@@ -233,25 +238,25 @@ class pvm_Connector_bbPress {
 		$subject = pvm::get_new_reply_subj();
 		$text = pvm::get_new_reply_msg();
 		$link = bbp_get_reply_url($reply_id);
-                $text = str_replace ('{site}',get_option( 'blogname' ),$text);
-                $subject = str_replace ('{site}',get_option( 'blogname' ),$subject);
+        $text = str_replace ('{site}',get_option( 'blogname' ),$text);
+        $subject = str_replace ('{site}',get_option( 'blogname' ),$subject);
 		$text    = str_replace ('{forum}',bbp_get_forum_title ($forum_id),$text);
-       	       	$subject = str_replace ('{forum}',bbp_get_forum_title ($forum_id),$subject);
+       	$subject = str_replace ('{forum}',bbp_get_forum_title ($forum_id),$subject);
 		$text    = str_replace ('{title}',bbp_get_topic_title( $topic_id ),$text);
-                $subject = str_replace ('{title}',bbp_get_topic_title( $topic_id ),$subject);
+        $subject = str_replace ('{title}',bbp_get_topic_title( $topic_id ),$subject);
 		$text    = str_replace ('{author}',$reply_author_name,$text);
-       	       	$subject = str_replace ('{author}',$reply_author_name,$subject);
+       	$subject = str_replace ('{author}',$reply_author_name,$subject);
 		$text    = str_replace ('{link}',$link,$text);
-                $subject = str_replace ('{link}',$link,$subject);
+        $subject = str_replace ('{link}',$link,$subject);
 		$text    = str_replace ('{content}',$content,$text);
-                $subject = str_replace ('{content}',$content,$subject);
+        $subject = str_replace ('{content}',$content,$subject);
 		$subject = apply_filters('bb_pvm_email_subject', $subject, $reply_id, $topic_id);
 
 		$options = array(
 			'id'     => $topic_id,
 			'author' => $reply_author_name,
 		);
-                $message = new pvm_Message();
+        $message = new pvm_Message();
 		$message->set_subject( $subject );
 		$message->set_text( $text);
 		$message->set_options( $options );
@@ -260,8 +265,8 @@ class pvm_Connector_bbPress {
 		} );
         // JJ $message->set_author( get_the_author_meta( 'display_name', $post->post_author ) );
 		$message->set_author($reply_author_name);
-		$debug_export = var_export($message, true);
-        //error_log ("Message:".$debug_export);
+		//$debug_export = var_export($message, true);
+        //error_log ("Message new reply:".$debug_export);
 
         //$this->handler->send_mail( $user_ids, $message );
         $this->send_mail($user_ids, $message);
@@ -298,13 +303,19 @@ class pvm_Connector_bbPress {
 			pvm::notify_invalid( $user, $reply->from, bbp_get_reply_url($reply->post),bbp_get_topic_title( $reply->post ) );
 			return false;
 		}
+        $debug_export = var_export($attch, true);
+        $attachments = $reply->parse_attachments();
+        $debug_export = var_export($attachments, true);
+        error_log("Attachemnets ". $debug_export);
 		$new_reply = array(
 			'post_parent'       => $reply->post, // topic ID
 			'post_author'       => $user->ID,
 			'post_content'      => $reply->parse_body(),
-            'post_attachments'  => $reply->parse_attachments(),
+            'post_attachments'  => $attachments['attachments'],
 			'post_title'        => $reply->subject,
 		);
+        if ($attachments['errors'])
+            error_log("There are errors!!");
         //$debug_export = var_export($new_reply, true);
         //error_log("New reply: ". $debug_export);
 		$meta = array(
@@ -314,25 +325,25 @@ class pvm_Connector_bbPress {
 		);
         // Subscribe to topic if needed
         if (pvm::get_option(' bb_pvm_topic_autosubscribe', '')) {
-            error_log("Autosubscribe ON");
+            //error_log("Autosubscribe ON");
             bbp_add_user_subscription( $user->ID, $reply->post );
         }
-        else error_log("Autosubscribe OFF");
+        //else error_log("Autosubscribe OFF");
         //$debug_export = var_export($new_reply, true);
         //error_log ("Reply to be insterted:".$debug_export);
 		//$debug_export = var_export($meta, true);
         //error_log ("Reply meta:".$debug_export);
 		$reply_id = bbp_insert_reply($new_reply, $meta);
-        $attchs = $new_reply['post_attachments'];
+        //$attchs = $new_reply['post_attachments'];
         //$debug_export = var_export($attchs, true);
         //error_log("Attachments!: ". $debug_export);
-        foreach($attchs as $attachment) {
-            //$debug_export = var_export($attachment, true);
-            //error_log("Attachments #: ". $debug_export);
-            $attachment['post_parrent'] = $reply_id;
-            $attachment['post_author']  = $user->ID;
-            $id = wp_insert_attachment($attachment, $attachment['filename'], $reply_id);
-            //error_log("after wp_insert_attachment: attachement id:". $id);
+        foreach($new_reply['post_attachments'] as $attch) {
+            $debug_export = var_export($attch, true);
+            error_log("Attachments #: ". $debug_export);
+            $attch['post_parrent'] = $reply_id;
+            $attch['post_author']  = $user->ID;
+            $id = wp_insert_attachment($attch, $attch['filename'], $reply_id);
+            error_log("after wp_insert_attachment: attachement id:". $id);
         }
 		do_action( 'bbp_new_reply', $reply_id, $meta['topic_id'], $meta['forum_id'], false, $new_reply['post_author'] );
 
