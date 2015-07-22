@@ -4,7 +4,7 @@ Donate link: https://postviamail.unicornis.pl/donation
 Tags: bbpress, post via mail
 Requires at least: WP 3.8
 Tested up to: 4.2.2
-Version: 1.1.1
+Version: 1.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
@@ -13,7 +13,7 @@ Sends notifications about new posts and replies on bbPress forums and allows rep
 to notification message.
 
 == Description ==
-Reply to any post, forum topic and forum reply **simply by sending e-mail reply**.
+Reply to any post, forum topic and forum reply **simply by sending e-mail reply**. Now with file attachment support.
 
 Plugin sends a notification message with customized Reply-to address, which enables to pass the reply to the correct place and post it to the Wordpress. 
 It strips away the quoted part of the message, so only the reply gets posted to the forum.
@@ -43,8 +43,12 @@ No Faq so far, but I will be more than happy to help. Post via <a href="https://
 
 
 == Changelog ==
-1.1.2
-    Quick fix for fatal error due to some dependencies on the other plugin on my dev site. My bad, apologies.	
+1.2
+    Attachment support added for bbPress replies. 
+
+1.1.2 
+    Quick fix for fatal error due to some dependencies on the other plugin on my dev site. 
+    My bad, apologies.
 
 1.1.1
     Fixed notification file formatting for html.

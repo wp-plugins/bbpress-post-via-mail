@@ -69,13 +69,13 @@ class pvm_Admin extends pvm_Autohooker {
 
 		// Global Settings
 		add_settings_section('bb_pvm_options_global', __('Main Settings','pvm'), array(__CLASS__, 'settings_section_main'), 'bb_pvm_options');
-		add_settings_field('bb_pvm_options_global_type', __('Messaging Handler','pvm'), 
+		add_settings_field('bb_pvm_options_global_type', __('Messaging Handler','pvm'),
 					array(__CLASS__, 'settings_field_type'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_replyto', __('Reply-To Address','pvm'), 
+		add_settings_field('bb_pvm_options_global_replyto', __('Reply-To Address','pvm'),
 					array(__CLASS__, 'settings_field_replyto'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_from_email', __('From Address','pvm'), 
+		add_settings_field('bb_pvm_options_global_from_email', __('From Address','pvm'),
 					array(__CLASS__, 'settings_field_from'), 'bb_pvm_options', 'bb_pvm_options_global');
-		add_settings_field('bb_pvm_options_global_send_to_author', __('Send To','pvm'), 
+		add_settings_field('bb_pvm_options_global_send_to_author', __('Send To','pvm'),
 					array(__CLASS__, 'settings_field_send_to_author'), 'bb_pvm_options', 'bb_pvm_options_global');
 	
         add_settings_field('bb_pvm_options_global_send_bad_reply', __('Send Bad Reply notification','pvm'),
@@ -94,8 +94,6 @@ class pvm_Admin extends pvm_Autohooker {
         add_settings_field('bb_pvm_options_att_attachments', __('Accept attachments in the mail replies','pvm'),
                           array(__CLASS__, 'settings_field_attachments'), 'bb_pvm_options', 'bb_pvm_options_attachments');
 
-        //add_settings_field('bb_pvm_options_att_attachments', __('Accept attachments in the mail replies','pvm'),
-        //                  array(__CLASS__, 'settings_field_attachments'), 'bb_pvm_options', 'bb_pvm_options_attachments');
         add_settings_field('bb_pvm_options_att_attachments_num', __('Maximum number of attachments in the mail replies','pvm'),
                           array(__CLASS__, 'settings_field_attachments_num'), 'bb_pvm_options', 'bb_pvm_options_attachments');
         
@@ -655,7 +653,7 @@ class pvm_Admin extends pvm_Autohooker {
         $current = pvm::get_option('bb_pvm_send_rej_att_user', '');
 
         echo '<label><input type="checkbox" name="bb_pvm_send_rej_att_user" ' . checked($current, true, false) . ' /> ';
-        _e('Send notification to user when on the attemp to attach file type not listed as allowed.', 'pvm');
+        _e('Send notification to user on the attemp to attach file type not listed as allowed.', 'pvm');
         echo '</label>';
     }
 
@@ -686,11 +684,13 @@ class pvm_Admin extends pvm_Autohooker {
     public static function settings_field_attachments_allowed() {
         $current = pvm::get_option('bb_pvm_attachments_allowed', '');
         if (!strlen($current)) {
-            $current = "*.txt #text files\n";
+            $current = "application/pdf\ntext/plain\ntext/html\napplication/msword\n";
+            $current.= "image/bmp\nimage/x-windows-bmp\nnimage/jpeg\naudio/mpeg3\nvideo/mpeg\naudio/mpeg\nimage/tiff\naudio/wav";
         }
         echo '<textarea name="bb_pvm_attachments_allowed" class="large-text" rows="8" id="bb_pvm_attachments_allowed" >' . esc_attr($current) . '</textarea>';
         _e('Type of attachments allowed. Only attachments matching listes MIME types or file extentions will be accepted.','pvm');
-        _e('Provide MIME types or file extensions, one item per line. Comments after # ', 'pvm');
+        echo '<br>';
+        _e('Provide MIME types or file extensions, one item per line. Comments after # ignored', 'pvm');
     }
 
     public static function validate_attachments_allowed($input) {
@@ -705,7 +705,7 @@ class pvm_Admin extends pvm_Autohooker {
         echo '<textarea name="bb_pvm_attachments_ignored" class="large-text" rows="8" id="bb_pvm_attachments_ignored" >' . esc_attr($current) . '</textarea>';
         _e('Type of attachments to be ignored. They will be silently rejected without any notification.','pvm.');
         echo '<br>';
-        _e('Provide MIME types or file extensions, one item per line. Comments after # ', 'pvm');
+        _e('Provide MIME types or file extensions, one item per line. Comments after # ignored', 'pvm');
         echo '<br>';
         _e('Example:','pvm');
         echo ' image/jpeg or *.jpeg';
@@ -744,7 +744,8 @@ class pvm_Admin extends pvm_Autohooker {
     public static function settings_field_rej_att_msg_user() {
         $current = pvm::get_option('bb_pvm_rej_att_user_msg', '');
         if (!strlen($current)) {
-            $current = __("You sent a reply to the post {title} on {site} with wrong attachments.\nThey were rejected because of {error}.",'pvm');
+            $current = __("You sent a reply to the post {title} on {site} with wrong attachments.\nThey were rejected because of following errors:\n\n{error}\n\n",'pvm');
+            $current.= __("Correct them and send your reply again.",'pvm');
         }
         echo '<textarea name="bb_pvm_rej_att_user_msg" class="large-text" rows="8" id="bb_pvm_rej_att_user_msg" >' . esc_attr($current) . '</textarea>';
         echo '<p class="description">' . __('You can use following tags: {author} {site} {title} {error} - they will be substituted', 'pvm') . '</p>';
@@ -756,7 +757,7 @@ class pvm_Admin extends pvm_Autohooker {
     public static function settings_field_rej_att_subj_admin() {
         $current = pvm::get_option('bb_pvm_rej_att_admin_subj', '');
         if (!strlen($current))
-            $current=__('Some attachments to your reply to post {title} on {site} have been rejected','pvm');
+            $current=__('Some attachments to reply of {author} to post {title} on {site} have been rejected','pvm');
             echo '<input type="text" name="bb_pvm_rej_att_admin_subj" class="regular-text" value="' . esc_attr($current) . '" />';
             echo '<p class="description">' . __('You can use following tags: {author} {site} {title} - they will be substituted', 'pvm') . '</p>';
         }
@@ -768,8 +769,8 @@ class pvm_Admin extends pvm_Autohooker {
     public static function settings_field_rej_att_msg_admin() {
         $current = pvm::get_option('bb_pvm_rej_att_admin_msg', '');
         if (!strlen($current)) {
-            $current = __("User {user} replied to the post {title} on {site} with wrong attachments.\nThey were rejected because of {error}.\n",'pvm');
-            $current .=__('Consider changing some settings for attachments','pvm');
+            $current = __("User {user} replied to the post {title} on {site} with wrong attachments.\nThey were rejected because of following errors:\n\n{error}\n\n",'pvm');
+            $current .=__('Consider changing some settings for attachments in plugin settings panel by adding allowed attachment types.','pvm');
         }
         echo '<textarea name="bb_pvm_rej_att_admin_msg" class="large-text" rows="8" id="bb_pvm_rej_att_admin_msg" >' . esc_attr($current) . '</textarea>';
         echo '<p class="description">' . __('You can use following tags: {author} {site} {title} {content} {error} - they will be substituted', 'pvm') . '</p>';
@@ -874,9 +875,10 @@ class pvm_Admin extends pvm_Autohooker {
 	public static function settings_field_bad_reply_msg() {
                 $current = pvm::get_option('bb_pvm_bad_reply_msg', '');
 		if (!strlen($current)) {
-                   $current = __("Hi {user},\nSomeone just tried to post to the {title} topic as you, but were unable to\n",'pvm');
-                   $current.= __("authenticate as you the message send by {from}. \n",'pvm');
-                   $current.= __("If you recently tried to reply to this topic, try replying to the original topic again.\n",'pvm'); 
+           $current = __("Hi {user},\nSomeone just tried to post to the {title} topic as you, but were unable to\n",'pvm');
+           $current.= __("authenticate as you the message send by {from}. \n",'pvm');
+           $current.= __("Error message: {error}\n",'pvm');
+           $current.= __("If you recently tried to reply to this topic, try replying to the original topic again.\n",'pvm'); 
 		   $current.= __("If that does not work, post on the topic {link} via your browser and tell the admin.\n\n",'pvm'); 
 		   $current.= __("The admins at {site}.\n\n",'pvm');
                 }

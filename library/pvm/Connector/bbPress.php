@@ -42,7 +42,7 @@ class pvm_Connector_bbPress {
         }
         if (!strlen($data))
         {
-            error_log("pvm: Empty message to be sent");
+            //error_log("pvm: Empty message to be sent");
             return;
         }
 		foreach ($users as $user) {
@@ -116,14 +116,6 @@ class pvm_Connector_bbPress {
         //$debug_export = var_export($user_ids, true);
         //error_log("Userss:".$debug_export);
         if (empty($user_ids)) return false;
-		// subscribe the users automatically
-        //if (pvm::get_option(' bb_pvm_topic_autosubscribe', '')) {
-        //    error_log("Autosubscribe ON");
-		//    foreach ($recipients as $user) {
-		//    	bbp_add_user_subscription( $user->ID, $topic_id );
-		//    }
-		//}
-        //else error_log("Autosubscribe OFF");
 		// Get userdata for all users
         $user_ids = array_map(function ($id) {
              return get_userdata($id);
@@ -174,7 +166,6 @@ class pvm_Connector_bbPress {
         //$this->handler->send_mail( $user_ids, $message );
         $this->send_mail($user_ids, $message);
 		//$this->handler->send_mail( $recipients, $subject, $text, $options );
-
 		do_action( 'bbp_post_notify_topic_subscribers', $topic_id, $user_ids );
 
 	}
@@ -234,7 +225,7 @@ class pvm_Connector_bbPress {
 		// Sanitize the HTML into text
 		$content = apply_filters('bb_pvm_html_to_text', bbp_get_reply_content($reply_id));
 		$debug_export = var_export($reply_id, true);
-		// Build email 
+		// Build email
 		$subject = pvm::get_new_reply_subj();
 		$text = pvm::get_new_reply_msg();
 		$link = bbp_get_reply_url($reply_id);
@@ -279,7 +270,57 @@ class pvm_Connector_bbPress {
 		$allowed = array( 'topic','reply' );
 		return in_array( $type, $allowed );
 	}
-
+    protected function send_bad_attachments_notification ($user, $title, $errors) {
+        $reply_author_name=$user->display_name;
+        $error_msg = implode($errors,"\n");
+        // error_log("Error message:".$error_msg);
+        if(pvm::get_option('bb_pvm_send_rej_att_user', false)) {
+            // Send notification to user who sent offending message
+            $subj = pvm::get_option('bb_pvm_rej_att_user_subj', false);
+            $text = pvm::get_option('bb_pvm_rej_att_user_msg', false);
+            $text = str_replace('{author}',$reply_author_name,$text);
+            $text = str_replace('{user}',$user->display_name,$text);
+            $subj = str_replace('{user}',$user->display_name,$subj);
+            $text = str_replace('{site}',get_option( 'blogname' ),$text);
+            $subj = str_replace('{site}',get_option( 'blogname' ),$subj);
+            $text = str_replace('{title}',$title,$text);
+            $text = str_replace('{link}',get_site_url(),$text);
+            $subj = str_replace('{title}',$title,$subj);
+            $text = str_replace('{error}',$error_msg,$text);
+            $text = apply_filters('bb_pvm_send_rej_att_user', $text, $user->ID );
+            //error_log("Bad attachment notification");
+            //error_log("E-mail: ".$user->user_email." Subj: ".$subj." Text: :".$text);
+            wp_mail($user->user_email, $subj, $text);
+        }
+        if(pvm::get_option('bb_pvm_send_rej_att_admin', false)) {
+            $user_roles[]="administrator";
+            // bail out if no user roles found
+            if ( !$user_roles ) return;
+            $recipients = array();
+            $subj = pvm::get_option('bb_pvm_rej_att_admin_subj', false);
+            $text = pvm::get_option('bb_pvm_rej_att_admin_msg', false);
+            //error_log("Text: ".$text);
+            $subj = str_replace('{author}',$reply_author_name,$subj);
+            $text = str_replace('{author}',$reply_author_name,$text);
+            $text = str_replace('{user}',$user->display_name,$text);
+            $subj = str_replace('{user}',$user->display_name,$subj);
+            $text = str_replace('{site}',get_option( 'blogname' ),$text);
+            $subj = str_replace('{site}',get_option( 'blogname' ),$subj);
+            $text = str_replace('{title}',$title,$text);
+            $text = str_replace('{link}',get_site_url(),$text);
+            $subj = str_replace('{title}',$title,$subj);
+            $text = str_replace('{error}',$error_msg,$text);
+            $text = apply_filters('bb_pvm_send_rej_att_admin', $text, $user->ID );
+            //error_log("Bad attachment notification admin");
+            $admins = get_users(array('role' => 'administrator', 'fields' => array('ID', 'user_email', 'display_name')));
+            //$debug_export = var_export($admins, true);
+            //error_log ("Admin Users :".$debug_export);
+            foreach ($admins as $user) {
+                //error_log("E-mail: ".$user->user_email." Subj: ".$subj." Text: ".$text);
+                wp_mail($user->user_email, $subj, $text);
+            }
+        }
+    }
 	public function handle_insert( $value, pvm_Reply $reply ) {
         //DebugDump($reply);
         //error_log ("Reply value:".$debug_export);
@@ -300,13 +341,20 @@ class pvm_Connector_bbPress {
         //$debug_export = var_export($user, true);
        	//error_log ("User:".$debug_export);
 		if (! $reply->is_valid() ) {
-			pvm::notify_invalid( $user, $reply->from, bbp_get_reply_url($reply->post),bbp_get_topic_title( $reply->post ) );
+			pvm::notify_invalid( $user, $reply->from, bbp_get_reply_url($reply->post),bbp_get_topic_title( $reply->post ),__("Invalid authentication code",'pvm') );
 			return false;
 		}
-        $debug_export = var_export($attch, true);
+        // Check if topic exists
+        $parrent_status = get_post_status( $reply->post);
+        //error_log("Parent :".$parrent_status);
+        if (!$parrent_status || $parrent_status == 'trash') {
+            error_log("Parrent topic doesn't exists");
+            pvm::notify_invalid( $user, $reply->from, bbp_get_reply_url($reply->post),bbp_get_topic_title( $reply->post ),__("Topic does not exist or was deleted",'pvm') );
+            return false;
+        }
         $attachments = $reply->parse_attachments();
-        $debug_export = var_export($attachments, true);
-        error_log("Attachemnets ". $debug_export);
+        //$debug_export = var_export($attachments, true);
+        //error_log("Attachemnets ". $debug_export);
 		$new_reply = array(
 			'post_parent'       => $reply->post, // topic ID
 			'post_author'       => $user->ID,
@@ -315,7 +363,7 @@ class pvm_Connector_bbPress {
 			'post_title'        => $reply->subject,
 		);
         if ($attachments['errors'])
-            error_log("There are errors!!");
+            $this->send_bad_attachments_notification($user, bbp_get_topic_title( $reply->post ) ,$attachments['errors']);
         //$debug_export = var_export($new_reply, true);
         //error_log("New reply: ". $debug_export);
 		$meta = array(
@@ -338,12 +386,12 @@ class pvm_Connector_bbPress {
         //$debug_export = var_export($attchs, true);
         //error_log("Attachments!: ". $debug_export);
         foreach($new_reply['post_attachments'] as $attch) {
-            $debug_export = var_export($attch, true);
-            error_log("Attachments #: ". $debug_export);
             $attch['post_parrent'] = $reply_id;
             $attch['post_author']  = $user->ID;
             $id = wp_insert_attachment($attch, $attch['filename'], $reply_id);
-            error_log("after wp_insert_attachment: attachement id:". $id);
+            $amd = wp_generate_attachment_metadata($id, $attch['filename']);
+            $debug_export = var_export($amd, true);
+            wp_update_attachment_metadata($id, $amd);
         }
 		do_action( 'bbp_new_reply', $reply_id, $meta['topic_id'], $meta['forum_id'], false, $new_reply['post_author'] );
 

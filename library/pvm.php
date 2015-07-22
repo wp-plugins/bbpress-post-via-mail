@@ -190,7 +190,7 @@ class pvm extends pvm_Autohooker {
 	 * @param WP_User $user User that supposedly sent the email
 	 * @param int $topic_id Topic ID
 	 */
-	public static function notify_invalid($user, $from, $link, $title) {
+	public static function notify_invalid($user, $from, $link, $title, $error='') {
 		// Build email
 		$notify = self::get_option('bb_pvm_send_bad_reply', false);
 		if (!$notify) return;
@@ -204,6 +204,7 @@ class pvm extends pvm_Autohooker {
 		$text = str_replace('{link}',$link,$text);
                 $subject = str_replace('{site}',$site,$subject);
 		$text = str_replace('{title}',$title,$text);
+        $text = str_replace('{error}',$error,$text);
 		$text = str_replace('{link}',get_site_url(),$text);
                 $subject = str_replace('{title}',$title,$subject);
                 
