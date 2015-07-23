@@ -46,6 +46,7 @@ No Faq so far, but I will be more than happy to help. Post via <a href="https://
 1.2.1
     Tested with WordPress 4.3
     Fixed translations and typos
+
 1.2
     Attachment support added for bbPress replies. 
 
