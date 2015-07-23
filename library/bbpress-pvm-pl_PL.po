@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: bbpress-post-via-mail\n"
+"Project-Id-Version: bbpress-pmv\n"
 "POT-Creation-Date: 2015-07-22 18:06+0100\n"
-"PO-Revision-Date: 2015-07-22 18:33+0100\n"
+"PO-Revision-Date: 2015-07-23 19:19+0100\n"
 "Last-Translator: Jędrzej Skrzynecki <j@unicornis.pl>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -20,159 +20,159 @@ msgstr ""
 #: library/pvm.php:25
 #, php-format
 msgid "Problem setting up bbPress Post Via Mail! %s"
-msgstr "Problem z konfiguracją wtyczki bbPress Post Via Mail! %s"
+msgstr ""
 
 #: library/pvm.php:61
 msgid "No handler set in the options"
-msgstr "Brak serwisu pocztowego"
+msgstr ""
 
 #: library/pvm.php:64
 msgid "Handler could not be found."
-msgstr "Nie można znaleźć serwisu pocztowego."
+msgstr ""
 
 #: library/pvm.php:120 library/pvm.php:125
 msgid "Invalid reply-to address"
-msgstr "Nieprawidłowy adres zwrotny"
+msgstr ""
 
 #: library/pvm/Admin.php:71
 msgid "Main Settings"
-msgstr "Ustawienia Główne"
+msgstr ""
 
 #: library/pvm/Admin.php:72
 msgid "Messaging Handler"
-msgstr "Serwis pocztowy"
+msgstr ""
 
 #: library/pvm/Admin.php:74
 msgid "Reply-To Address"
-msgstr "Adres odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:76
 msgid "From Address"
-msgstr "Adres nadawcy"
+msgstr ""
 
 #: library/pvm/Admin.php:78
 msgid "Send To"
-msgstr "Adresat"
+msgstr ""
 
 #: library/pvm/Admin.php:81
 msgid "Send Bad Reply notification"
-msgstr "Wyślij powiadomienie o błędnej odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:92
 msgid "Attachment options"
-msgstr "Opcje załączników"
+msgstr ""
 
 #: library/pvm/Admin.php:94
 msgid "Accept attachments in the mail replies"
-msgstr "Akceptuj załączniki wysyłane pocztą"
+msgstr ""
 
 #: library/pvm/Admin.php:97
 msgid "Maximum number of attachments in the mail replies"
-msgstr "Maksymalna liczba załączników w odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:100
 msgid "Maximum size of attachment in the mail replies"
-msgstr "Maksymalny rozmiar załącznika w odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:103
 msgid "Ignore attachments of this type"
-msgstr "Ignoruj ​​ten typ załączników"
+msgstr ""
 
 #: library/pvm/Admin.php:106
 msgid "Accept attachments of this type"
-msgstr "Akceptuj ten typ załączników"
+msgstr ""
 
 #: library/pvm/Admin.php:109
 msgid "Send Rejected Attachment notification to the poster"
-msgstr "Wyślij informację o odrzuceniu do nadawcy"
+msgstr ""
 
 #: library/pvm/Admin.php:112
 msgid "Send Rejected Attachment notification to the admin"
-msgstr "Wyślij informację o odrzuceniu do adminictratorów"
+msgstr ""
 
 #: library/pvm/Admin.php:117
 msgid "Notification messages"
-msgstr "Powiadomienia"
+msgstr ""
 
 #: library/pvm/Admin.php:118
 msgid "Bad Reply Subject"
-msgstr "Temat powiadomienia o złej odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:120
 msgid "Bad Reply Message"
-msgstr "Treść powiadomienia o złej odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:123
 msgid "Rejected Attachment Subject for user"
-msgstr "Odrzucony Załącznik Temat dla użytkownika"
+msgstr ""
 
 #: library/pvm/Admin.php:125
 msgid "Rejected Attachment Message for user"
-msgstr "Wiadomość Załącznik odrzucone dla użytkownika"
+msgstr ""
 
 #: library/pvm/Admin.php:127
 msgid "Rejected Attachment Subject for admin"
-msgstr "Odrzucony Załącznik Temat dla administratora"
+msgstr ""
 
 #: library/pvm/Admin.php:129
 msgid "Rejected Attachment Message for admin"
-msgstr "Odrzucono Wiadomość Załącznik do admina"
+msgstr ""
 
 #: library/pvm/Admin.php:132
 msgid "Notification messages for WordPress"
-msgstr "Komunikaty powiadamiania dla WordPress"
+msgstr ""
 
 #: library/pvm/Admin.php:133
 msgid "New Post Subject"
-msgstr "Nowy Temat"
+msgstr ""
 
 #: library/pvm/Admin.php:135
 msgid "New Post Message"
-msgstr "Nowy post Wiadomość"
+msgstr ""
 
 #: library/pvm/Admin.php:137
 msgid "New Comment Subject"
-msgstr "Nowy komentarz Temat"
+msgstr ""
 
 #: library/pvm/Admin.php:139
 msgid "New Comment Message"
-msgstr "Nowy komentarz Wiadomość"
+msgstr ""
 
 #: library/pvm/Admin.php:143
 msgid "Notification messages bbPress"
-msgstr "Komunikaty powiadamiania bbPress"
+msgstr ""
 
 #: library/pvm/Admin.php:144
 msgid "New Topic Subject"
-msgstr "Nowy Temat wątku"
+msgstr ""
 
 #: library/pvm/Admin.php:146
 msgid "New Topic Message"
-msgstr "Nowy wątek wiadomość"
+msgstr ""
 
 #: library/pvm/Admin.php:148
 msgid "New Reply Subject"
-msgstr "Nową odpowiedź Temat"
+msgstr ""
 
 #: library/pvm/Admin.php:150
 msgid "New Reply Message"
-msgstr "Nowa odpowiedź Wiadomość"
+msgstr ""
 
 #: library/pvm/Admin.php:152
 msgid "Autosubscribe to the Topic on Reply "
-msgstr "Autosubscribe do tematu Odpowiedz "
+msgstr ""
 
 #: library/pvm/Admin.php:185
 msgid "bbPress Post Via Mail Options"
-msgstr "bbPress pocztowe Via opcje poczty"
+msgstr ""
 
 #: library/pvm/Admin.php:257
 msgid "Cheatin&#8217; uh?"
-msgstr "& # 8217 Cheatin; hm?"
+msgstr ""
 
 #: library/pvm/Admin.php:263
 msgid "<strong>ERROR</strong>: options page not found."
-msgstr "<Strong> Błąd </ strong>: Strona opcje nie znalazł."
+msgstr ""
 
 #: library/pvm/Admin.php:269
 #, php-format
@@ -180,72 +180,65 @@ msgid ""
 "The <code>%1$s</code> setting is unregistered. Unregistered settings are "
 "deprecated. See http://codex.wordpress.org/Settings_API"
 msgstr ""
-"<Code> %1$s </ code> ustawienie jest niezarejestrowany. Ustawienia "
-"niezarejestrowane są przestarzałe. Zobacz http://codex.wordpress.org/"
-"Settings_API"
 
 #: library/pvm/Admin.php:287
 msgid "Settings saved."
-msgstr "Ustawienia zapisane."
+msgstr ""
 
 #: library/pvm/Admin.php:315
 msgid "Invalid handler type"
-msgstr "Nieprawidłowy typ obsługi"
+msgstr ""
 
 #: library/pvm/Admin.php:321
 msgid "Invalid handler"
-msgstr "Nieprawidłowy obsługi"
+msgstr ""
 
 #: library/pvm/Admin.php:373
 msgid "Allow to post attachments along with replies"
-msgstr "Pozwól, aby dodawać załączników wraz z odpowiedziami"
+msgstr ""
 
 #: library/pvm/Admin.php:376 library/pvm/Admin.php:379
 #: library/pvm/Admin.php:383
 msgid "Clear to restore defaults"
-msgstr "Clear, aby powrócić do ustawień domyślnych"
+msgstr ""
 
 #: library/pvm/Admin.php:397
 msgid "No handlers are available!"
-msgstr "Brak teleskopowe są dostępne!"
+msgstr ""
 
 #: library/pvm/Admin.php:426
 msgid "The selected handler is invalid"
-msgstr "Wybrany obsługi jest nieprawidłowy"
+msgstr ""
 
 #: library/pvm/Admin.php:441
 msgid "pvm will append an authentication token to this email before sending."
-msgstr "PVM dołączy tokenu uwierzytelniania na ten email przed wysłaniem."
+msgstr ""
 
 #: library/pvm/Admin.php:459
 msgid "The reply-to address must not contain a plus address section"
-msgstr "Adres odpowiedzi nie może zawierać część adresową oraz"
+msgstr ""
 
 #: library/pvm/Admin.php:477
 msgid "The reply-to address must be a valid address"
-msgstr "Adres zwrotny musi być prawidłowy adres"
+msgstr ""
 
 #: library/pvm/Admin.php:494
 msgid "Send a notification to the reply author"
-msgstr "Wyślij zgłoszenie do autora odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:517
 msgid "Leave blank to use the default email address (<code>wordpress@</code>)"
 msgstr ""
-"Pozostaw puste, aby użyć domyślnego adresu e-mail (<code> wordpress @ </ "
-"code>)"
 
 #: library/pvm/Admin.php:527
 msgid "New topic {title} on forum {forum}"
-msgstr "Nowy temat {title} na forum {Forum}"
+msgstr ""
 
 #: library/pvm/Admin.php:529
 msgid ""
 "You can use following tags: {site} {author} {forum} {title} - they will be "
 "substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {} {witryny autorskie forum}} {{Title} - "
-"będą one podstawione"
 
 #: library/pvm/Admin.php:544 library/pvm/Admin.php:579
 #: library/pvm/Admin.php:787 library/pvm/Admin.php:822
@@ -256,11 +249,6 @@ msgid ""
 "{link}\n"
 "\n"
 msgstr ""
-"{Zawartości}\n"
-" --- \n"
-"Odpisz na tego e-maila bezpośrednio lub obejrzyj wątek  online: \n"
-" {Link} \n"
-" \n"
 
 #: library/pvm/Admin.php:545 library/pvm/Admin.php:580
 #: library/pvm/Admin.php:788 library/pvm/Admin.php:823
@@ -268,32 +256,26 @@ msgid ""
 "You are receiving this email because you subscribed to it. Login and visit "
 "the topic to unsubscribe from these emails."
 msgstr ""
-"Otrzymujesz tę wiadomość, ponieważ subskrybujesz nim. Zaloguj się i odwiedź "
-"wątek zrezygnować z tych wiadomości e-mail."
 
 #: library/pvm/Admin.php:548 library/pvm/Admin.php:583
 msgid ""
 "You can use following tags: {author} {site} {forum} {title} {content} {link} "
 "- they will be substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {autor} {witryny} {} {Title forum} "
-"{content} {łącza} - będą one podstawione"
 
 #: library/pvm/Admin.php:562
 msgid "New reply in topic {title} on forum {forum}"
-msgstr "Nowe odpowiedzi w temacie {tytuł} na forum {Forum}"
+msgstr ""
 
 #: library/pvm/Admin.php:564
 msgid ""
 "You can use following tags: {author} {site} {forum} {title} - they will be "
 "substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {autor} {witryny} {forum} {title} - będą "
-"one podstawione"
 
 #: library/pvm/Admin.php:596
 msgid "New post on site {site}"
-msgstr "Nowy post na miejscu {strony}"
+msgstr ""
 
 #: library/pvm/Admin.php:598 library/pvm/Admin.php:732
 #: library/pvm/Admin.php:762 library/pvm/Admin.php:807
@@ -302,83 +284,67 @@ msgid ""
 "You can use following tags: {author} {site} {title} - they will be "
 "substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {author} {strony} {title} - będą one "
-"podstawione"
 
 #: library/pvm/Admin.php:613
 msgid "Subscribe to forum topic when replied to it via mail"
-msgstr "Subskrybuj wątek, gdy odpowiedział mu za pośrednictwem poczty"
+msgstr ""
 
 #: library/pvm/Admin.php:632
 msgid "Allow attachments to be posted via mail."
-msgstr "Ce załączniki mają być wysłane za pośrednictwem poczty."
+msgstr ""
 
 #: library/pvm/Admin.php:644
 msgid ""
 "Send notification to admin whenever a user tries to attach file type not "
 "listed as allowed."
 msgstr ""
-"Wyślij powiadomienie do administratora, gdy użytkownik próbuje dołączyć typ "
-"pliku nie wymienione jako dozwolone."
 
 #: library/pvm/Admin.php:656
 msgid ""
 "Send notification to user on the attemp to attach file type not listed as "
 "allowed."
 msgstr ""
-"Wyślij powiadomienie do użytkownika na attemp dołączyć typ pliku nie "
-"wymienione jako dozwolone."
 
 #: library/pvm/Admin.php:668
 msgid "Allowed number of attachments to be posted per mail."
-msgstr "Dozwolone ilość załączników zostanie zamieszczona na maila."
+msgstr ""
 
 #: library/pvm/Admin.php:677
 msgid "Allowed size of each attachments to be posted per mail."
-msgstr "Dozwolony rozmiar każdego załączników zostanie zamieszczona na maila."
+msgstr ""
 
 #: library/pvm/Admin.php:691
 msgid ""
 "Type of attachments allowed. Only attachments matching listes MIME types or "
 "file extentions will be accepted."
 msgstr ""
-"Rodzaj załączników dozwolone. Tylko załączniki typy MIME pasujące Listes "
-"extentions plików lub będą akceptowane."
 
 #: library/pvm/Admin.php:693 library/pvm/Admin.php:708
 msgid ""
 "Provide MIME types or file extensions, one item per line. Comments after # "
 "ignored"
 msgstr ""
-"Zapewnić typy MIME lub rozszerzenia plików, jeden element w wierszu. "
-"Komentarze po # ignorowane"
 
 #: library/pvm/Admin.php:706
 msgid ""
 "Type of attachments to be ignored. They will be silently rejected without "
 "any notification."
 msgstr ""
-"Rodzaj załączniki mają być ignorowane. Oni będą po cichu odrzucony bez "
-"powiadomienia."
 
 #: library/pvm/Admin.php:710
 msgid "Example:"
-msgstr "Przykład:"
+msgstr ""
 
 #: library/pvm/Admin.php:713
 msgid ""
 "Attachments listed here will be excluded prior to analizing against <b> "
 "allowed</b> list below"
 msgstr ""
-"Załączniki wymienione tutaj będą wyłączone przed analizing przed <b> mogą </ "
-"b> lista"
 
 #: library/pvm/Admin.php:730
 msgid ""
 "Some attachments to your reply to post {title} on {site} have been rejected"
 msgstr ""
-"Niektóre załączniki do odpowiedzi, aby opublikować {title}} na {strony "
-"zostały odrzucone"
 
 #: library/pvm/Admin.php:747
 msgid ""
@@ -388,32 +354,22 @@ msgid ""
 "{error}\n"
 "\n"
 msgstr ""
-"Wysłaniu odpowiedzi na post {title} na {miejscu} z niewłaściwych "
-"załączników \n"
-"They zostały odrzucone ze względu na następujące błędy:. \n"
-" \n"
-" {Błąd} \n"
-" \n"
 
 #: library/pvm/Admin.php:748
 msgid "Correct them and send your reply again."
-msgstr "Popraw je i wysłać odpowiedź ponownie."
+msgstr ""
 
 #: library/pvm/Admin.php:751
 msgid ""
 "You can use following tags: {author} {site} {title} {error} - they will be "
 "substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {author} {strony} {title} {Błąd} - będą one "
-"podstawione"
 
 #: library/pvm/Admin.php:760
 msgid ""
 "Some attachments to reply of {author} to post {title} on {site} have been "
 "rejected"
 msgstr ""
-"Niektóre załączniki do odpowiedzi od autora} {aby umieścić {title}} na "
-"{strony zostały odrzucone"
 
 #: library/pvm/Admin.php:772
 msgid ""
@@ -423,81 +379,62 @@ msgid ""
 "{error}\n"
 "\n"
 msgstr ""
-"Użytkownik {użytkownik} odpowiedział na post {title} na {miejscu} z "
-"niewłaściwych załączników \n"
-"They zostały odrzucone ze względu na następujące błędy:. \n"
-" \n"
-" {Błąd} \n"
-" \n"
 
 #: library/pvm/Admin.php:773
 msgid ""
 "Consider changing some settings for attachments in plugin settings panel by "
 "adding allowed attachment types."
 msgstr ""
-"Rozważ zmianę niektórych ustawień dla załączników w panelu ustawień wtyczki "
-"dodając dozwolone typy załączników."
 
 #: library/pvm/Admin.php:776
 msgid ""
 "You can use following tags: {author} {site} {title} {content} {error} - they "
 "will be substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {author} {strony} {title} {content} "
-"{błędach} - będą one podstawione"
 
 #: library/pvm/Admin.php:791
 msgid ""
 "You can use following tags: {author} {site} {title} {content} {link} - they "
 "will be substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {author} {strony} {title} {content} {Link} "
-"- będą one podstawione"
 
 #: library/pvm/Admin.php:805
 msgid "New comment to post {title} on {site}"
-msgstr "Nowy komentarz do posta {title}} na {miejscu"
+msgstr ""
 
 #: library/pvm/Admin.php:826
 msgid ""
 "You can use following tags: {author} {site} {title} {content} {link}- they "
 "will be substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {author} {strony} {title} {content} {Link} "
-"- będą one podstawione"
 
 #: library/pvm/Admin.php:839
 msgid "Send a notification about bad reply to the reply author"
-msgstr "Wyślij powiadomienie o złych odpowiedzi na autora odpowiedzi"
+msgstr ""
 
 #: library/pvm/Admin.php:861
 msgid "Bad reply {title} on site {site}"
-msgstr "Bad odpowiedź {title} na miejscu {miejscu}"
+msgstr ""
 
 #: library/pvm/Admin.php:878
 msgid ""
 "Hi {user},\n"
 "Someone just tried to post to the {title} topic as you, but were unable to\n"
 msgstr ""
-"Witaj {user}, \n"
-"Someone tylko starałem się pisać do {title} temacie, jak ty, ale nie byli w "
-"stanie \n"
 
 #: library/pvm/Admin.php:879
 msgid "authenticate as you the message send by {from}. \n"
-msgstr "uwierzytelnienia, jak wam wyślij wiadomość przez {z}. \n"
+msgstr ""
 
 #: library/pvm/Admin.php:880
 msgid "Error message: {error}\n"
-msgstr "Komunikat o błędzie: Błąd} \n"
+msgstr ""
 
 #: library/pvm/Admin.php:881
 msgid ""
 "If you recently tried to reply to this topic, try replying to the original "
 "topic again.\n"
 msgstr ""
-"Jeśli niedawno starał się odpowiedzieć na ten temat, spróbuj ponownie w "
-"odpowiedzi na oryginalnym temacie. \n"
 
 #: library/pvm/Admin.php:882
 msgid ""
@@ -505,141 +442,134 @@ msgid ""
 "the admin.\n"
 "\n"
 msgstr ""
-"Jeśli to nie zadziała, odpowiedz w wątku {link} przez przeglądarkę i "
-"powiadom o problemie  administratora.\n"
-" \n"
 
 #: library/pvm/Admin.php:883
 msgid ""
 "The admins at {site}.\n"
 "\n"
 msgstr ""
-"Admini witryny {site}. \n"
-" \n"
 
 #: library/pvm/Admin.php:886
 msgid ""
 "You can use following tags: {user} {from} {site} {title} - they will be "
 "substituted"
 msgstr ""
-"Możesz użyć następujących tagów: {user} {z} {strony} {title} - będą one "
-"podstawione"
 
 #: library/pvm/Admin.php:908
 msgid "The from address must be a valid address"
-msgstr "Od adresu musi być prawidłowy adres"
+msgstr ""
 
 #: library/pvm/Admin.php:936
 msgid "Handler Settings"
-msgstr "Ustawienia Handler"
+msgstr ""
 
 #: library/pvm/Manager.php:106
 msgid "Notification Settings"
-msgstr "Ustawienia Powiadomień"
+msgstr ""
 
 #: library/pvm/Manager.php:176
 msgid "Set the default user notification settings here."
-msgstr "Ustaw domyślne ustawienia powiadomień użytkownika tutaj."
+msgstr ""
 
 #: library/pvm/Manager.php:226
 msgid "The notification option is invalid"
-msgstr "Zawiadomienie jest nieważne opcja"
+msgstr ""
 
 #: library/pvm/Reply.php:79
 msgid "instead of"
-msgstr "zamiast"
+msgstr ""
 
 #: library/pvm/Reply.php:83
 msgid "for attachment "
-msgstr "do mocowania "
+msgstr ""
 
 #: library/pvm/Reply.php:130
 msgid "Attachment"
-msgstr "Załącznik"
+msgstr ""
 
 #: library/pvm/Reply.php:130
 msgid "not allowed by extension nor Mime type"
-msgstr "Nie wolno za tym idzie, ani typ MIME"
+msgstr ""
 
 #: library/pvm/Reply.php:135
 msgid "Maximum number of attachments exceeded, ommiting remaining"
-msgstr "Maksymalna liczba załączników przekroczony, ommiting pozostałe"
+msgstr ""
 
 #: library/pvm/Reply.php:139
 msgid "Maximum size of attachment exceeded, skipped this one"
-msgstr "Maksymalny rozmiar przywiązania przekroczone, pomijane ten jeden"
+msgstr ""
 
 #: library/pvm/Connector/bbPress.php:344
 msgid "Invalid authentication code"
-msgstr "Nieprawidłowy kod uwierzytelniający"
+msgstr ""
 
 #: library/pvm/Connector/bbPress.php:352
 msgid "Topic does not exist or was deleted"
-msgstr "Temat nie istnieje lub został usunięty"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:668
 msgid "All new posts"
-msgstr "Wszystkie nowe posty"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:669
 #: library/pvm/Connector/WordPress.php:676
 msgid "No notifications"
-msgstr "Brak powiadomienia"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:673
 msgid "All new comments"
-msgstr "Wszystkie nowe komentarze"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:674
 msgid "New comments on posts I've commented on"
-msgstr "Nowe komentarze do postów mam komentarz"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:675
 msgid "Replies to my comments"
-msgstr "Odpowiedzi na moje komentarze"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:684
 #: library/pvm/Connector/WordPress.php:689
 msgid "All"
-msgstr "Wszyscy"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:685
 #: library/pvm/Connector/WordPress.php:692
 msgid "None"
-msgstr "Żaden"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:690
 msgid "Participant"
-msgstr "Uczestnik"
+msgstr ""
 
 #: library/pvm/Connector/WordPress.php:691
 msgid "Replies"
-msgstr "Odpowiedzi"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:27
 msgid "Mandrill API key not set"
-msgstr "Mandrill nie ustawić klucz API"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:116 library/pvm/Handler/Postmark.php:115
 msgid "Invalid API key"
-msgstr "Nieprawidłowy klucz API"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:118 library/pvm/Handler/Postmark.php:117
 #, php-format
 msgid "Error with sent body: %s"
-msgstr "Błąd z wysłanego ciała: %s"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:120
 msgid "Mandrill server error"
-msgstr "Mandrill błąd serwera"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:122 library/pvm/Handler/Postmark.php:121
 msgid "Unknown error"
-msgstr "nieznany błąd"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:127
 msgid "Invalid response from Mandrill"
-msgstr "Nieprawidłowa odpowiedź od mandryl"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:180
 #, php-format
@@ -647,12 +577,10 @@ msgid ""
 "Once you've set up your API key here, add an Inbound route in your <a "
 "href='%s'>Mandrill inbound dashboard</a> to <code>%s</code>"
 msgstr ""
-"Po skonfigurowaniu klucz API tu dodać trasę Inbound w <a href=' %s Mandrill "
-"desce rozdzielczej przychodzące </a> do <code> %s </ code>"
 
 #: library/pvm/Handler/Mandrill.php:198
 msgid "Mandrill API Key"
-msgstr "Mandrill Klucz API"
+msgstr ""
 
 #: library/pvm/Handler/Mandrill.php:212
 #, php-format
@@ -661,20 +589,18 @@ msgid ""
 "href='%s'>your settings</a>, then generate an API key under the credentials "
 "tab"
 msgstr ""
-"Musisz utworzyć klucz API w serwisie Mandrill. Szef <a href=' %s ustawienia "
-"</a>, następnie wygenerować klucz API w zakładce mandatów"
 
 #: library/pvm/Handler/Postmark.php:28
 msgid "Postmark API key not set"
-msgstr "Stempla pocztowego nie ustawić klucz API"
+msgstr ""
 
 #: library/pvm/Handler/Postmark.php:119
 msgid "Postmark server error"
-msgstr "Decyduje data stempla pocztowego błąd serwera"
+msgstr ""
 
 #: library/pvm/Handler/Postmark.php:126
 msgid "Invalid response from Postmark"
-msgstr "Nieprawidłowa odpowiedź od stemplem pocztowym"
+msgstr ""
 
 #: library/pvm/Handler/Postmark.php:209
 #, php-format
@@ -682,12 +608,10 @@ msgid ""
 "Once you've set up your API key here, make sure to set your Inbound Hook URL "
 "to <code>%s</code>"
 msgstr ""
-"Po skonfigurowaniu klucz API tutaj, upewnij się, aby ustawić adres URL do "
-"Inbound Hook <code> %s </ code>"
 
 #: library/pvm/Handler/Postmark.php:225
 msgid "Postmark API Key"
-msgstr "Klucz API PostMark"
+msgstr ""
 
 #: library/pvm/Handler/Postmark.php:238
 msgid ""
@@ -695,6 +619,3 @@ msgid ""
 "href='https://postmarkapp.com/servers'>your server</a>, then generate an API "
 "key under the credentials tab"
 msgstr ""
-"Musisz utworzyć klucz API na stronie PostMark. Przejdź na <a href='https://"
-"postmarkapp.com/servers'>serwer</a>, a następnie wygeneruj klucz API w "
-"zakładce credentials"

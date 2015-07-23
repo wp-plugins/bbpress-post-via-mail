@@ -3,8 +3,8 @@ Contributors: Unicornis, Ryan McCue
 Donate link: https://postviamail.unicornis.pl/donation
 Tags: bbpress, post via mail
 Requires at least: WP 3.8
-Tested up to: 4.2.2
-Version: 1.2
+Tested up to: 4.2.3
+Version: 1.2.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
@@ -43,6 +43,9 @@ No Faq so far, but I will be more than happy to help. Post via <a href="https://
 
 
 == Changelog ==
+1.2.1
+    Tested with WordPress 4.3
+    Fixed translations and typos
 1.2
     Attachment support added for bbPress replies. 
 

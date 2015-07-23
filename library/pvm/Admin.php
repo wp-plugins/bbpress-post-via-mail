@@ -106,10 +106,10 @@ class pvm_Admin extends pvm_Autohooker {
         add_settings_field('bb_pvm_options_att_attachments_allowed', __('Accept attachments of this type','pvm'),
                           array(__CLASS__, 'settings_field_attachments_allowed'), 'bb_pvm_options', 'bb_pvm_options_attachments');
         
-        add_settings_field('bb_pvm_options_att_send_rej_att_user', __('Send Rejected Attachment notification to the poster','pvm'),
+        add_settings_field('bb_pvm_options_att_send_rej_att_user', __('Send notification on rejected attachment to the poster','pvm'),
                           array(__CLASS__, 'settings_field_send_rej_att_user'), 'bb_pvm_options', 'bb_pvm_options_attachments');
 
-        add_settings_field('bb_pvm_options_att_send_rej_att_admin', __('Send Rejected Attachment notification to the admin','pvm'),
+        add_settings_field('bb_pvm_options_att_send_rej_att_admin', __('Send notification on rejected attachment to the admin','pvm'),
                           array(__CLASS__, 'settings_field_send_rej_att_admin'), 'bb_pvm_options', 'bb_pvm_options_attachments');
 
 
@@ -373,14 +373,14 @@ class pvm_Admin extends pvm_Autohooker {
     echo '<p>' . __('Allow to post attachments along with replies', 'pvm') . '</p>';
     }
     public static function settings_section_messages() {
-    echo '<p>' . __('Clear to restore defaults', 'pvm') . '</p>';
+    echo '<p>' . __('Clear to restore defaults, then click on Save twice', 'pvm') . '</p>';
     }
 	public static function settings_section_messagesWP() {
-		 echo '<p>' . __('Clear to restore defaults', 'pvm') . '</p>';
+		 echo '<p>' . __('Clear to restore defaults, then click on Save twice', 'pvm') . '</p>';
 
         }
 	 public static function settings_section_messagesBBP() {
-		echo '<p>' . __('Clear to restore defaults', 'pvm') . '</p>';
+		echo '<p>' . __('Clear to restore defaults, then click on Save twice', 'pvm') . '</p>';
 
               
         }
@@ -541,8 +541,9 @@ class pvm_Admin extends pvm_Autohooker {
         public static function settings_field_new_topic_msg() {
                 $current = pvm::get_option('bb_pvm_new_topic_msg', '');
                 if (!strlen($current)) {
-                   $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
-                   $current .=__("You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.",'pvm');
+                   $current  = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current .= __("You are receiving this email because you subscribed to the forum {forum} on site {site}.\n",'pvm');
+                   $current .= __("Login and visit the forum to unsubscribe from these emails.",'pvm');
                 }
                 echo '<textarea name="bb_pvm_new_topic_msg" class="large-text" rows="8" id="bb_pvm_new_topic_msg" >' . esc_attr($current) . '</textarea>';
 		echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
@@ -576,8 +577,9 @@ class pvm_Admin extends pvm_Autohooker {
 	public static function settings_field_new_reply_msg() {
         $current = pvm::get_option('bb_pvm_new_reply_msg', '');
 		if (!strlen($current)) {
-                   $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
-                   $current .=__('You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.','pvm');
+                   $current  = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current .= __("You are receiving this email because you subscribed topic {topic} on forum {forum}.\n",'pvm');
+                   $current .= __('Login and visit the topic to unsubscribe from these emails.','pvm');
                 }
         echo '<textarea name="bb_pvm_new_reply_msg" class="large-text" rows="8" id="bb_pvm_new_reply_msg" >' . esc_attr($current) . '</textarea>';
         echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
@@ -610,7 +612,7 @@ class pvm_Admin extends pvm_Autohooker {
         $current = pvm::get_option('bb_pvm_topic_autosubscribe', '');
 
         echo '<label><input type="checkbox" name="bb_pvm_topic_autosubscribe" ' . checked($current, true, false) . ' /> ';
-        _e('Subscribe to forum topic when replied to it via mail', 'pvm');
+        _e('Subscribe to forum topic replied to via mail', 'pvm');
         echo '</label>';
     }
 
@@ -664,7 +666,7 @@ class pvm_Admin extends pvm_Autohooker {
 
     public static function settings_field_attachments_num() {
         $current = pvm::get_option('bb_pvm_attachments_num', '');
-        echo '<input type="text" name="bb_pvm_attachments_num" size="4"  value="' . esc_attr($current) . '" />';
+        echo '<input type="text" name="bb_pvm_attachments_num" size="4"  value="' . esc_attr($current) . '" />    ';
         _e('Allowed number of attachments to be posted per mail.', 'pvm');
     }
 
@@ -673,8 +675,8 @@ class pvm_Admin extends pvm_Autohooker {
     }
     public static function settings_field_attachments_size() {
         $current = pvm::get_option('bb_pvm_attachments_size', '');
-        echo '<input type="text" name="bb_pvm_attachments_size" size="8"  value="' . esc_attr($current) . '" />';
-        _e('Allowed size of each attachments to be posted per mail.', 'pvm');
+        echo '<input type="text" name="bb_pvm_attachments_size" size="8"  value="' . esc_attr($current) . '" />   ';
+        _e('Allowed size of each attachments to be posted per mail in KiB.', 'pvm');
     }
     public static function validate_attachments_size($input) {
         return $input;
@@ -691,6 +693,11 @@ class pvm_Admin extends pvm_Autohooker {
         _e('Type of attachments allowed. Only attachments matching listes MIME types or file extentions will be accepted.','pvm');
         echo '<br>';
         _e('Provide MIME types or file extensions, one item per line. Comments after # ignored', 'pvm');
+        echo '<br>';
+        _e('Example:','pvm');
+        echo ' image/jpeg # jpeg image or *.jpeg # image';
+        echo '<br>';
+
     }
 
     public static function validate_attachments_allowed($input) {
@@ -708,9 +715,11 @@ class pvm_Admin extends pvm_Autohooker {
         _e('Provide MIME types or file extensions, one item per line. Comments after # ignored', 'pvm');
         echo '<br>';
         _e('Example:','pvm');
-        echo ' image/jpeg or *.jpeg';
+        echo ' application/pgp-signature # digital signature';
+        echo '*.vcf #vCard file';
+
         echo '<br>';
-        _e('Attachments listed here will be excluded prior to analizing against <b> allowed</b> list below','pvm');
+        _e('Attachments listed here will be excluded prior to analizing the <b>allowed</b> list below','pvm');
     }
 
     /**
@@ -785,7 +794,7 @@ class pvm_Admin extends pvm_Autohooker {
         $current = pvm::get_option('bb_pvm_new_post_msg', '');
         if (!strlen($current)) {
             $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
-            $current .=__("You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.",'pvm');
+            $current .=__("You are receiving this email because you subscribed to it. Login and change your user settings to unsubscribe from these emails.",'pvm');
         }
         echo '<textarea name="bb_pvm_new_post_msg" class="large-text" rows="8" id="bb_pvm_new_post_msg" >' . esc_attr($current) . '</textarea>';
         echo '<p class="description">' . __('You can use following tags: {author} {site} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
@@ -819,8 +828,8 @@ class pvm_Admin extends pvm_Autohooker {
 	public static function settings_field_new_comment_msg() {
                 $current = pvm::get_option('bb_pvm_new_comment_msg', '');
 		if (!strlen($current)) {
-                   $current = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
-                   $current .=__("You are receiving this email because you subscribed to it. Login and visit the topic to unsubscribe from these emails.",'pvm');
+                   $current  = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current .= __("You are receiving this email because you subscribed to it. Login and change your user settings to unsubscribe from these emails.",'pvm');
                 }
                 echo '<textarea name="bb_pvm_new_comment_msg" class="large-text" rows="8" id="bb_pvm_new_comment_msg" >' . esc_attr($current) . '</textarea>';
                 echo '<p class="description">' . __('You can use following tags: {author} {site} {title} {content} {link}- they will be substituted', 'pvm') . '</p>';
@@ -875,12 +884,14 @@ class pvm_Admin extends pvm_Autohooker {
 	public static function settings_field_bad_reply_msg() {
                 $current = pvm::get_option('bb_pvm_bad_reply_msg', '');
 		if (!strlen($current)) {
-           $current = __("Hi {user},\nSomeone just tried to post to the {title} topic as you, but were unable to\n",'pvm');
-           $current.= __("authenticate as you the message send by {from}. \n",'pvm');
+           $current = __("Hi {user},\nSomeone just tried to post to the {title} topic from {from},\n",'pvm');
+           $current.= __("but were unable to authenticate it as the message send by you. \n",'pvm');
            $current.= __("Error message: {error}\n",'pvm');
-           $current.= __("If you recently tried to reply to this topic, try replying to the original topic again.\n",'pvm'); 
-		   $current.= __("If that does not work, post on the topic {link} via your browser and tell the admin.\n\n",'pvm'); 
-		   $current.= __("The admins at {site}.\n\n",'pvm');
+           $current.= __("If you recently tried to reply to this topic, try replying to the original topic message again not to the reply notification.",'pvm');
+	 $current.= "\n";   
+           $current.= __("If that does not work, post on the topic {link} via your browser and tell the admin about the problem.\n",'pvm');
+	   $current.= "\n";	 
+           $current.= __("The admins at {site}.\n\n",'pvm');
                 }
                 echo '<textarea name="bb_pvm_bad_reply_msg" class="large-text" rows="8" id="bb_pvm_new_reply_msg" >' . esc_attr($current) . '</textarea>';
                 echo '<p class="description">' . __('You can use following tags: {user} {from} {site} {title} - they will be substituted', 'pvm') . '</p>';
