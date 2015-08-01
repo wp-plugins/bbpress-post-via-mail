@@ -127,7 +127,7 @@ class pvm_Reply {
                 continue;
             }
             if ((strpos($attachments_allowed,$attachment_ext) === false) && (strpos($attachments_allowed,$attachment->ContentType) === false)) {
-                $errors[] = prepare_error_msg(__('Attachment','pvm').' '.$attachment->Name.' '.__("not allowed by extension nor Mime type",'pvm')." ".$attachment->ContentType);
+                $errors[] = prepare_error_msg(__('Attachment','pvm').' '.$attachment->Name.' '.__("is a file of banned type (not allowed by extension nor Mime type)",'pvm')." ".$attachment->ContentType);
                 //error_log(prepare_error_msg(__('Attachment','pvm').' '.$attachment->Name.' '.__("not allowed by extension nor Mime type",'pvm')." ".$attachment->ContentType));
                 continue;
             }

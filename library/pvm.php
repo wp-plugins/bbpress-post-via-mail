@@ -169,20 +169,20 @@ class pvm extends pvm_Autohooker {
 		return $address;
 	}
 	public static function get_new_topic_subj() {
-                return self::get_option('bb_pvm_new_topic_subj', false);
-        }
+        return self::get_option('bb_pvm_new_topic_subj', false);
+    }
 
 	public static function get_new_topic_msg() {
-                return self::get_option('bb_pvm_new_topic_msg', false);
-        }
+        return self::get_option('bb_pvm_new_topic_msg', false);
+    }
 
-        public static function get_new_reply_subj() {
-                return self::get_option('bb_pvm_new_reply_subj', false);
-        }
+    public static function get_new_reply_subj() {
+        return self::get_option('bb_pvm_new_reply_subj', false);
+    }
 
-        public static function get_new_reply_msg() {
-                return self::get_option('bb_pvm_new_reply_msg', false);
-        }
+    public static function get_new_reply_msg() {
+        return self::get_option('bb_pvm_new_reply_msg', false);
+    }
 
 	/**
 	 * Notify the user of an invalid reply

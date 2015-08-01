@@ -7,9 +7,9 @@ class pvm_Connector_bbPress {
 		$this->handler = $handler;
 		remove_action( 'bbp_new_topic',    'bbp_notify_forum_subscribers', 11, 5 );
 		remove_action( 'bbp_new_reply',    'bbp_notify_topic_subscribers', 11, 5 );
-		add_action( 'bbp_new_topic', array( $this, 'notify_new_topic' ), 10, 4 );
-		add_filter( 'bbp_new_reply', array( $this, 'notify_on_reply'  ),  1, 5 );
-
+		add_action( 'bbp_new_topic', array( $this, 'notify_new_topic' ), 20, 4 );
+		add_action( 'bbp_new_reply', array( $this, 'notify_on_reply'  ), 20, 5 );
+        add_filter( 'bbp_before_record_activity_parse_args', array( $this, 'map_activity_to_group' ),15,1);
 		add_action( 'pvm.reply.insert', array( $this, 'handle_insert' ), 20, 2 );
 	}
 
@@ -36,9 +36,11 @@ class pvm_Connector_bbPress {
         $data="";
         if ( $text = $message->get_text() ) {
             $data = $text;
+            $type = 'text/plain';
         }
         if ( $html = $message->get_html() ) {
             $data = $html;
+            $type = 'text/html';
         }
         if (!strlen($data))
         {
@@ -47,9 +49,10 @@ class pvm_Connector_bbPress {
         }
 		foreach ($users as $user) {
 			$to = $user->user_email;
-                        $subj = $message->get_subject();
-                        $reply_to=$message->get_reply_address($user);
+            $subj = $message->get_subject();
+            $reply_to=$message->get_reply_address($user);
 			$headers = array();
+            $attachments = $message->get_attachments();
 			// Set the message ID if we've got one
 			if ( ! empty( $options['message-id'] ) ) {
 				$headers = array(
@@ -82,12 +85,30 @@ class pvm_Connector_bbPress {
 			}
   			//$debug_export = var_export($headers, true);
             $header[]='Reply-To: '.$reply_to;
+            $header[]='Content-Type: '. $type;
             //error_log("Message -> To:".$to." Subject:".$subj." Data:".$data);
-			wp_mail( $to, $subj, $data, $header );
+			wp_mail( $to, $subj, $data, $header, $attachments );
 			//$messages[ $user->ID ] = $this->send_single($data);
 		}
 		
 	}
+   public function get_post_attachments_paths($post_id) {
+        $attachments_paths = array ();
+        $args = array( 'post_type' => 'attachment', 'posts_per_page' => -1, 'post_status' =>'any', 'post_parent' => $post_id );
+        $attachments = get_posts( $args );
+        //$debug_export = var_export($attachments, true);
+        //error_log ("Attacht for: ".$post_id."->".$debug_export." count ".count($attachments));
+        if ( $attachments ) {
+            error_log ("Attachments!");
+            foreach ( $attachments as $attachment ) {
+                $fullsize_path = get_attached_file( $attachment->ID );
+                //error_log("Attachment: ".$fullsize_path);
+                $attachments_paths[] = $fullsize_path;
+            }
+        }
+        return $attachments_paths;
+    }
+
         /**
         * Notify user roles on new topic
         */
@@ -123,13 +144,20 @@ class pvm_Connector_bbPress {
 
 
 		// Sanitize the HTML into text
-		$content = apply_filters( 'bb_pvm_html_to_text', bbp_get_topic_content( $topic_id ) );
+		// Jj $content = apply_filters( 'bb_pvm_html_to_text', bbp_get_topic_content( $topic_id ) );
+        // Jj $content = apply_filters( 'bb_pvm_html_to_text', get_post_field( 'post_content', $topic_id ) );
+        $content = get_post_field( 'post_content', $topic_id );
         //error_log("Topic id". $topic_id);
         //error_log("Forum_id". $forum_id);
-		// Build email
+        $send_attachments_in_notification = pvm::get_option('bb_pvm_send_attachments', '');
+        if ($send_attachments_in_notification) {
+            $attachments_paths = $this -> get_post_attachments_paths( $topic_id );
+        }
+        // Build email
         $reply_author_name = bbp_get_topic_author_display_name( $topic_id );
         $subject = pvm::get_new_topic_subj();
         $text = pvm::get_new_topic_msg();
+        //error_log("Content: ".$content);
         $link = bbp_get_reply_url($topic_id);
         $text = str_replace ('{site}',get_option( 'blogname' ),$text);
         $subject = str_replace ('{site}',get_option( 'blogname' ),$subject);
@@ -144,7 +172,7 @@ class pvm_Connector_bbPress {
         $text    = str_replace ('{content}',$content,$text);
         $subject = str_replace ('{content}',$content,$subject);
         $subject = apply_filters('bb_pvm_email_subject', $subject, 0, $topic_id);
-
+        $text = nl2br($text);
 		$options = array(
 			'author' => $reply_author_name,
 			'id'     => $topic_id,
@@ -152,11 +180,13 @@ class pvm_Connector_bbPress {
 
         $message = new pvm_Message();
         $message->set_subject( $subject );
-        $message->set_text( $text);
+        $message->set_html( $text);
         $message->set_options( $options );
         $message->set_reply_address_handler( function ( WP_User $user, pvm_Message $message ) use ( $topic_id ) {
                                                 return pvm::get_reply_address( $topic_id, $user );
                                            } );
+        if ($send_attachments_in_notification)
+            $message->set_attachments($attachments_paths);
         //$post = get_post($topic_id);
         //$debug_export = var_export($post, true);
         //error_log ("Post :".$debug_export);
@@ -169,7 +199,46 @@ class pvm_Connector_bbPress {
 		do_action( 'bbp_post_notify_topic_subscribers', $topic_id, $user_ids );
 
 	}
+    
+    public function map_activity_to_group( $args = array() ) {
+        
+        $debug_export = var_export($args, true);
+        if (array_key_exists ( 'component', $args ) && $args['component'] == buddypress()->groups->id)
+            // Already done, returning
+            return $args;
+        // Get current BP group
+        $group = groups_get_current_group();
+        if (!empty( $group ) )
+            return $args;   // Let it be processed by BuddyPress handle
+        // Get the group slug from the link
+        $link_parts = explode ("/",$args['primary_link']);
+        $parts_num = count($link_parts);
+        for ($i=0;$i<$parts_num;$i++)
+            if ($link_parts[$i] == buddypress()->groups->id) break;
+        if ($i == $parts_num)
+            // Reached end of link, not a group forum
+            return $args;
+        $group_id = groups_get_id($link_parts[$i+1]);  // Get group by slug
+        $group = groups_get_group( array( 'group_id' => $group_id ) );
+        // Not posting from a BuddyPress group? stop now!
+        if ( empty( $group ) )
+            return $args;
 
+        // Set the component to 'groups' so the activity item shows up in the group
+        $args['component']         = buddypress()->groups->id;
+
+        // Move the forum post ID to the secondary item ID
+        $args['secondary_item_id'] = $args['item_id'];
+
+        // Set the item ID to the group ID so the activity item shows up in the group
+        $args['item_id']           = $group->id;
+
+        // Update the group's last activity
+        groups_update_last_activity( $group->id );
+
+        return $args;
+    }
+    
 	/**
 	 * Send a notification to subscribers
 	 *
@@ -177,7 +246,7 @@ class pvm_Connector_bbPress {
 	 */
 	public function notify_on_reply( $reply_id = 0, $topic_id = 0, $forum_id = 0, $anonymous_data = false, $reply_author = 0 ) {
 		//error_log("notify_on_reply");
-                if ($this->handler === null) {
+        if ($this->handler === null) {
 			return false;
 		}
 
@@ -223,8 +292,10 @@ class pvm_Connector_bbPress {
 		}, $user_ids);
 
 		// Sanitize the HTML into text
-		$content = apply_filters('bb_pvm_html_to_text', bbp_get_reply_content($reply_id));
-		$debug_export = var_export($reply_id, true);
+		//$content = apply_filters('bb_pvm_html_to_text', bbp_get_reply_content($reply_id));
+		//$content = bbp_get_reply_content($reply_id);
+        $content = get_post_field( 'post_content', $reply_id );
+        $debug_export = var_export($reply_id, true);
 		// Build email
 		$subject = pvm::get_new_reply_subj();
 		$text = pvm::get_new_reply_msg();
@@ -242,15 +313,20 @@ class pvm_Connector_bbPress {
 		$text    = str_replace ('{content}',$content,$text);
         $subject = str_replace ('{content}',$content,$subject);
 		$subject = apply_filters('bb_pvm_email_subject', $subject, $reply_id, $topic_id);
-
+        $text = nl2br($text);
 		$options = array(
 			'id'     => $topic_id,
 			'author' => $reply_author_name,
 		);
+        $send_attachments_in_notification = pvm::get_option('bb_pvm_send_attachments', '');
+        if ($send_attachments_in_notification)
+            $attachments_paths = $this->get_post_attachments_paths($reply_id);
         $message = new pvm_Message();
 		$message->set_subject( $subject );
-		$message->set_text( $text);
+		$message->set_html( $text);
 		$message->set_options( $options );
+        if ($send_attachments_in_notification)
+            $message->set_attachments( $attachments_paths );
         $message->set_reply_address_handler( function ( WP_User $user, pvm_Message $message ) use ( $topic_id ) {
 			return pvm::get_reply_address( $topic_id, $user );
 		} );
@@ -299,7 +375,6 @@ class pvm_Connector_bbPress {
             $recipients = array();
             $subj = pvm::get_option('bb_pvm_rej_att_admin_subj', false);
             $text = pvm::get_option('bb_pvm_rej_att_admin_msg', false);
-            //error_log("Text: ".$text);
             $subj = str_replace('{author}',$reply_author_name,$subj);
             $text = str_replace('{author}',$reply_author_name,$text);
             $text = str_replace('{user}',$user->display_name,$text);
@@ -393,11 +468,12 @@ class pvm_Connector_bbPress {
             $debug_export = var_export($amd, true);
             wp_update_attachment_metadata($id, $amd);
         }
+        //error_log("Calling bbp_new_reply");
 		do_action( 'bbp_new_reply', $reply_id, $meta['topic_id'], $meta['forum_id'], false, $new_reply['post_author'] );
-
+        //do_action( 'ass_group_notification_activity',"Ikakak");
 		// bbPress removes the user's subscription because bbp_update_reply() is hooked to 'bbp_new_reply' and it checks for $_POST['bbp_topic_subscription']
 		bbp_add_user_subscription( $new_reply['post_author'], $meta['topic_id'] );
-
+    
 		return $reply_id;
 	}
 

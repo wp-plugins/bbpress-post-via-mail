@@ -53,6 +53,8 @@ class pvm_Admin extends pvm_Autohooker {
 	    register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_subj', array(__CLASS__, 'validate_bad_reply_subj') );
         register_setting( 'bb_pvm_options', 'bb_pvm_bad_reply_msg', array(__CLASS__, 'validate_bad_reply_msg') );
 
+        register_setting( 'bb_pvm_options', 'bb_pvm_send_attachments', array(__CLASS__, 'validate_send_attachments') );
+        
         register_setting( 'bb_pvm_options', 'bb_pvm_attachments', array(__CLASS__, 'validate_attachments') );
         register_setting( 'bb_pvm_options', 'bb_pvm_attachments_num', array(__CLASS__, 'validate_attachments_num') );
         register_setting( 'bb_pvm_options', 'bb_pvm_attachments_size', array(__CLASS__, 'validate_attachments_size') );
@@ -90,6 +92,9 @@ class pvm_Admin extends pvm_Autohooker {
 			$connector->register_settings();
 		}
         add_settings_section('bb_pvm_options_attachments', __('Attachment options','pvm'), array(__CLASS__, 'settings_section_attachments'), 'bb_pvm_options');
+
+        add_settings_field('bb_pvm_options_send att_attachments', __('Send attachments in the mail notifications','pvm'),
+                          array(__CLASS__, 'settings_field_send_attachments'), 'bb_pvm_options', 'bb_pvm_options_attachments');
 
         add_settings_field('bb_pvm_options_att_attachments', __('Accept attachments in the mail replies','pvm'),
                           array(__CLASS__, 'settings_field_attachments'), 'bb_pvm_options', 'bb_pvm_options_attachments');
@@ -132,11 +137,11 @@ class pvm_Admin extends pvm_Autohooker {
 		add_settings_section('bb_pvm_options_messagesWP', __('Notification messages for WordPress','pvm'), array(__CLASS__, 'settings_section_messagesWP'), 'bb_pvm_options');
 		add_settings_field('bb_pvm_options_messages_new_post_subj',__('New Post Subject','pvm'),
 				          array(__CLASS__, 'settings_field_new_post_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
-        add_settings_field('bb_pvm_options_messages_new_post_msg', __('New Post Message','pvm'), 
+        add_settings_field('bb_pvm_options_messages_new_post_msg', __('New Post Message','pvm'),
 				          array(__CLASS__, 'settings_field_new_post_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
 		add_settings_field('bb_pvm_options_messages_new_comment_subj',__('New Comment Subject','pvm'),
 				          array(__CLASS__, 'settings_field_new_comment_subj'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
-        add_settings_field('bb_pvm_options_messages_new_comment_msg', __('New Comment Message','pvm'), 
+        add_settings_field('bb_pvm_options_messages_new_comment_msg', __('New Comment Message','pvm'),
 				          array(__CLASS__, 'settings_field_new_comment_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesWP');
 	        
 		if (is_plugin_active('bbpress/bbpress.php')) {
@@ -151,7 +156,7 @@ class pvm_Admin extends pvm_Autohooker {
                                 array(__CLASS__, 'settings_field_new_reply_msg'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
              add_settings_field('bb_pvm_options_topic_autosubscribe',__('Autosubscribe to the Topic on Reply ','pvm'),
                                 array(__CLASS__, 'settings_field_topic_autosubscribe'), 'bb_pvm_options', 'bb_pvm_options_messagesBBP');
-         }	
+         }
 
 		pvm_Manager::register_default_settings();
 	}
@@ -541,9 +546,12 @@ class pvm_Admin extends pvm_Autohooker {
         public static function settings_field_new_topic_msg() {
                 $current = pvm::get_option('bb_pvm_new_topic_msg', '');
                 if (!strlen($current)) {
-                   $current  = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
+                   $current  = "{content}\n---\n";
+                   $current .= __('If you want to reply to the topic, send reply to this email directly or view <a href="{link}">the topic online</a>','pvm');
+                   $current .= "\n\n";
                    $current .= __("You are receiving this email because you subscribed to the forum {forum} on site {site}.\n",'pvm');
                    $current .= __("Login and visit the forum to unsubscribe from these emails.",'pvm');
+                   $current .= "\n";
                 }
                 echo '<textarea name="bb_pvm_new_topic_msg" class="large-text" rows="8" id="bb_pvm_new_topic_msg" >' . esc_attr($current) . '</textarea>';
 		echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
@@ -562,7 +570,7 @@ class pvm_Admin extends pvm_Autohooker {
 		if (!strlen($current))
                         $current=__('New reply in topic {title} on forum {forum}','pvm');
                 echo '<input type="text" name="bb_pvm_new_reply_subj" class="regular-text" value="' . esc_attr($current) . '" />';
-                echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} - they will be substituted', 'pvm') . '</p>';
+                echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title}', 'pvm') . '</p>';
         }
 
         public static function validate_new_reply_subj($input) {
@@ -577,10 +585,13 @@ class pvm_Admin extends pvm_Autohooker {
 	public static function settings_field_new_reply_msg() {
         $current = pvm::get_option('bb_pvm_new_reply_msg', '');
 		if (!strlen($current)) {
-                   $current  = __("{content}\n---\nReply to this email directly or view it online:\n{link}\n\n",'pvm');
-                   $current .= __("You are receiving this email because you subscribed topic {topic} on forum {forum}.\n",'pvm');
-                   $current .= __('Login and visit the topic to unsubscribe from these emails.','pvm');
-                }
+            $current  = "{content}\n---\n";
+            $current .= __('If you also want to reply to this topic, send reply to this email directly or view <a href="{link}">the topic and reply online</a>','pvm');
+            $current .= "\n\n";
+            $current .= __("You are receiving this email because you subscribed to the forum {forum} on site {site}.\n",'pvm');
+            $current .= __("Login and visit the forum to unsubscribe from these emails.",'pvm');
+            $current .= "\n";
+        }
         echo '<textarea name="bb_pvm_new_reply_msg" class="large-text" rows="8" id="bb_pvm_new_reply_msg" >' . esc_attr($current) . '</textarea>';
         echo '<p class="description">' . __('You can use following tags: {author} {site} {forum} {title} {content} {link} - they will be substituted', 'pvm') . '</p>';
     }
@@ -627,6 +638,18 @@ class pvm_Admin extends pvm_Autohooker {
     }
     
     // Attachments settings
+    public static function settings_field_send_attachments() {
+        $current = pvm::get_option('bb_pvm_send_attachments', '');
+        echo '<label><input type="checkbox" name="bb_pvm_send_attachments" ' . checked($current, true, false) . ' /> ';
+        _e('Send attachments to the posts, topic and replies in mail notifications.', 'pvm');
+        echo '</label>';
+    }
+
+    public static function validate_send_attachments($input) {
+        return (bool) $input;
+    }
+
+
     public static function settings_field_attachments() {
         $current = pvm::get_option('bb_pvm_attachments', '');
 

@@ -48,6 +48,16 @@ class pvm_Message {
 	 *
 	 * @return string Subject line (including prefixes)
 	 */
+    protected $attachments = array();
+
+    public function get_attachments() {
+        return $this->attachments;
+    }
+
+    public function set_attachments($attachments) {
+        $this->attachments = $attachments;
+    }
+
 	public function get_subject() {
 		return $this->subject;
 	}
